@@ -31,25 +31,33 @@ This separation means you define roles once and choose the intelligence level at
 
 ## Model routing
 
-Different tasks have different requirements for model capability, latency, cost, and privacy.
+Every request to an LLM carries several independent requirements. The routing layer matches requests to providers based on these parameters.
 
-### Local vs. cloud
+### Routing parameters
 
-Some tasks should run on local models:
-- Stack management (reading/writing/validating task state)
-- Quick lookups and simple transformations
-- Tasks involving private data that shouldn't leave the machine
+These are separate dimensions, not a single "local vs. cloud" toggle:
 
-Other tasks benefit from cloud models:
-- Complex reasoning and architectural decisions
-- Synthesis across large codebases
-- Tasks where quality matters more than cost
+- **Intelligence**: How capable does the model need to be? A task validation check needs less reasoning than an architectural review.
+- **Privacy**: Can this data leave the machine? Personal data (calendar, email, OmniFocus tasks) stays local. Public code analysis can go anywhere.
+- **Cost**: Is this worth spending money on? Background sweeps should be cheap. A critical architectural decision is worth a premium.
+- **Latency**: Is the developer waiting? Synchronous conversation needs fast responses. Overnight batch work doesn't care.
+- **Locality**: Should this run locally regardless of privacy? If local hardware is sitting idle, route work there to use it — even for non-sensitive tasks.
 
-A routing layer (e.g., LiteLLM or similar proxy) sits between agents and models, directing requests to the appropriate backend. Agents specify their requirements; the router fulfills them.
+A sensitive task might need the best *local* model available, even if a cloud model would be smarter. A non-sensitive task might still run locally because the local machine has spare capacity and it's free. These are independent decisions.
 
-### Hardware awareness
+### The routing layer
 
-The system should be aware of available hardware (local GPU/unified memory, cloud API quotas) and schedule work accordingly. A machine with 128GB unified memory can run larger local models than one with 64GB. The scheduling system should adapt to what's available rather than hardcoding model choices.
+A proxy sits between agents and models, directing requests to the appropriate backend. Agents tag their requests with requirements; the router fulfills them. The specific proxy technology (LiteLLM, a custom router, whatever comes next) is an implementation detail — the important thing is the abstraction: agents don't know or care which model or machine handles their request.
+
+### Multi-machine pool
+
+The pool of available compute isn't just one machine. It might include:
+
+- Multiple local Macs (e.g., an M3 Max for primary work, an M1 Max running overnight batch jobs)
+- Cloud API endpoints (Anthropic, OpenAI, etc.)
+- Cloud VMs with GPUs for specific workloads
+
+The router should be aware of the full pool and distribute work across it based on the routing parameters above. A machine with 128GB unified memory can run larger local models than one with 64GB. Cloud endpoints have rate limits and cost. The scheduler adapts to what's available.
 
 ### Cost awareness
 
