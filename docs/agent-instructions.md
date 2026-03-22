@@ -45,10 +45,11 @@ Cursor reads `AGENTS.md`, `CLAUDE.md`, and `.cursorrules`. The `.cursor/rules/` 
 When an orchestrator can spawn specialized subagents, each subagent needs a definition that covers:
 
 1. **Role**: What this agent does (one sentence)
-2. **Architectural position**: This is a leaf agent. It cannot spawn sub-agents. It receives a task, does the work, returns results.
-3. **Tools**: What capabilities the agent has (search, file read, file write, bash, etc.)
-4. **Operating protocol**: How it should approach its work (search strategy, output format, quality standards)
-5. **Output requirements**: What the orchestrator expects back (raw data, synthesized report, code changes, etc.)
+2. **Tools**: What capabilities the agent has (search, file read, file write, bash, etc.)
+3. **Operating protocol**: How it should approach its work (search strategy, output format, quality standards)
+4. **Output requirements**: What the caller expects back (raw data, synthesized report, code changes, etc.)
+
+Focus on what the agent does, not where it sits in a hierarchy. Agent communication patterns (teams, direct spawning, message passing) are evolving quickly — the role definition should be stable regardless of how agents are composed.
 
 ### Example roles
 

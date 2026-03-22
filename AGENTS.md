@@ -1,29 +1,28 @@
 # Agent Instructions
 
-Guidance for AI coding agents working in this repository. Follows the open AGENTS.md standard.
+This repo defines a development environment framework for agentic coding workflows. It's conventions, tools, and configs — not an application. If you're an agent working here, changes you make affect how agents work in projects that use this framework.
 
-## What this repo is
+## Principles
 
-A development environment framework, not an application. It defines conventions, tools, and configurations for agentic coding workflows. Changes here affect how agents operate in projects that adopt this framework.
+- **One README per directory.** Information at one level, one time. Higher levels point down but don't duplicate.
+- **Simple code.** No comprehension debt. If you can't follow it in one read, simplify it.
+- **Task state is JSON on disk.** `semantic_stack/tasks/` has the structured task files. Not Jira, not GitHub Issues, not markdown checklists.
+- **Commits are semantic.** Every commit message says *why*, not just what changed.
+- **Agents get real tools.** Docker, networking, CI access — not just file editing.
 
-## Key principles
+## Conventions
 
-- One README per directory. Information lives at one level of abstraction, one time. Higher levels point down to children for details but do not duplicate them.
-- Code simplicity over cleverness. No comprehension debt. A developer should understand the code they're working with.
-- Task state lives in `semantic_stack/tasks/` as structured JSON files, not in any tool-specific format.
-- Every meaningful state change gets a git commit with a message that captures the semantic meaning of the change.
-- Agents should be empowered to operate -- they need Docker, networking, CI access, not just file editing.
+- Don't auto-stage files. `git add` is a human review gate — the developer stages after reviewing diffs.
+- No AI attribution in commits. No "Co-Authored-By: Claude" or "Generated with" footers.
+- Comments should make sense in 6 months. Don't write comments relative to a diff ("moved this here", "removed the old version").
+- Prefer structured data (JSON, TOML) over prose when machines need to read it.
+- If a tool or instruction doesn't work, fix it immediately. Don't waste tokens relearning what the last agent already figured out.
 
-## Working conventions
+## Where things are
 
-- Do not auto-stage files. `git add` is a human review gate.
-- No AI attribution in commit messages.
-- Write durable comments that make sense in 6 months, not ephemeral ones relative to a diff.
-- Prefer structured data (JSON, TOML) over unstructured prose for machine-readable state.
-- When a tool doesn't work as expected, fix the instructions immediately so future agents don't waste tokens relearning.
-
-## Documentation structure
-
-Each directory has exactly one README.md that introduces what's in that directory. For deeper detail, follow the pointers to child directories. Do not duplicate information across levels.
-
-See `docs/` for the full philosophy and design documents.
+- `docs/` — design philosophy, architecture, ideas
+- `semantic_stack/tasks/` — active tasks, icebox, archive (all JSON)
+- `semantic_stack/scripts/` — linter, git hooks
+- `semantic_stack/agents/` — agent role templates
+- `devcontainer/` — container configs for empowered agent environments
+- `dotfiles/` — shell, editor, tool configuration
