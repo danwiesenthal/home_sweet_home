@@ -34,8 +34,8 @@
     },
     {
       "id": "voice-overseer-loop",
-      "description": "Implement the audio-only overseer interaction mode",
-      "notes": "A constant voice loop with the orchestrator agent. STT via local model, LLM for processing, lightweight TTS for responses. Should work hands-free, no screen required. Like a phone call with an executive assistant who can write code.",
+      "description": "Implement the full-duplex audio interaction mode",
+      "notes": "A continuous voice channel with the orchestrator agent. STT via local model, LLM for processing, lightweight TTS for responses. Should work hands-free, no screen required. Complements the keyboard-toggle dictation mode (Super Whisper) with a phone-call-style always-on alternative.",
       "added_date": "2026-03-22"
     },
     {
@@ -113,7 +113,7 @@
     {
       "id": "ci-failure-notification",
       "description": "Automatic agent spawning on CI failure",
-      "notes": "When a CI build fails, automatically create an agent to investigate. One agent per branch (not per build). Deduplication logic to avoid spawning redundant investigators. ",
+      "notes": "When a CI build fails, automatically create an agent to investigate. One agent per branch (not per build). Deduplication logic to avoid spawning redundant investigators.",
       "added_date": "2026-03-22"
     },
     {
@@ -168,6 +168,48 @@
       "id": "git-branching-strategy",
       "description": "Define branching strategy for multi-agent parallel work",
       "notes": "Stack management on main like a heartbeat. Feature work on branches. Cross-merging strategy for agents working in parallel. Needs thought about conflict resolution.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "parallel-worktrees",
+      "description": "Multi-agent parallel execution via git worktrees",
+      "notes": "Analogous to multi-processing in OS design. Each agent works in its own worktree/branch. The hard problem is reconciling task state when branches merge back. Could use PR-based merging with a dedicated reconciliation agent. Single-threaded model works for now but this is the path to scaling.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "agent-hooks",
+      "description": "Use agent-level hooks (Claude Code hooks, etc.) for real-time consistency enforcement",
+      "notes": "Beyond git hooks: when an agent modifies task files or takes certain actions, fire a hook to validate the change immediately. Keeps the semantic stack in a valid state at all times, not just at commit boundaries.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "agentic-org-roles",
+      "description": "Organizational role analogy: agentic financial officer, executive officer, etc.",
+      "notes": "Apply traditional org structure to agent teams. An agentic financial officer tracks budgets and approves compute spending. An agentic executive officer coordinates priorities across work streams. Efficiency consultants observe the system and suggest improvements when coordination breaks down. The analogy: what if you staffed an organization primarily with agents?",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "agent-io-observation",
+      "description": "Sidecar process to observe and log all agent inputs and outputs",
+      "notes": "For any given agent role, capture what goes in and what comes out. This data enables grading agent performance, spotting failures, and building training datasets. Not necessarily grading every interaction, but having the data available for analysis and fine-tuning.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "agent-role-fine-tuning",
+      "description": "Fine-tune cheaper models to approximate expensive models for specific agent roles",
+      "notes": "If an agent role initially requires a very capable model, gather input/output data over time from that expensive model. Use that data to fine-tune a smaller, cheaper model to handle the same role. Specific agent role definitions make this more tractable than fine-tuning for general coding.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "forward-momentum-mechanism",
+      "description": "Ensure the system never reaches a stuck state with no actionable next steps",
+      "notes": "The inductive progress idea: once bootstrapped, the system should always have something it could do next. If the task queue empties, that itself is a trigger to generate new tasks (research, quality improvements, exploration). Not an infinite loop of busywork, but a bias toward having options. Like keeping a fire going vs. having to re-light it.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "task-enqueue-tool",
+      "description": "Small script/tool for agents to enqueue tasks rather than editing JSON directly",
+      "notes": "Agents provide the semantic content (what and why). The tool handles structural bookkeeping (IDs, dates, counters, validation). Reduces the chance of malformed task state. Like a journaling layer for the task filesystem.",
       "added_date": "2026-03-22"
     }
   ]

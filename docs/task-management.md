@@ -155,9 +155,9 @@ python3 semantic_stack/scripts/lint_tasks.py --strict  # warnings become errors
 python3 semantic_stack/scripts/lint_tasks.py /path/to/tasks/  # explicit directory
 ```
 
-### Git hooks
+### Hooks: git and agent
 
-Two hooks enforce the system:
+Two git hooks enforce structural consistency:
 
 **pre-commit-tasks**: Runs `lint_tasks.py` when any `tasks/*.json` file is staged. Blocks the commit if structural errors are found. Skips entirely if no task files are staged, so it doesn't slow down unrelated commits.
 
@@ -174,6 +174,8 @@ ln -sf ../../semantic_stack/scripts/hooks/post-commit-tasks .git/hooks/post-comm
 echo 'source "$REPO_ROOT/semantic_stack/scripts/hooks/pre-commit-tasks"' >> .git/hooks/pre-commit
 ```
 
+Beyond git hooks, agent-level hooks are also worth exploring. Tools like Claude Code now support hooks that fire when agents take specific actions (modify files, use tools, etc.). These could enforce semantic stack consistency in real time — not just at commit time. For example: when an agent modifies a task file, a hook could validate the change immediately and reject it before it even reaches git. This keeps the system always pointed in a valid direction.
+
 ## Why not GitHub Issues / Jira / Linear
 
 These tools work for human project management. They fail for agent-driven workflows because:
@@ -184,3 +186,24 @@ These tools work for human project management. They fail for agent-driven workfl
 4. **Sync complexity**: Keeping an external system in sync with local state is a distributed systems problem. Keeping a file in sync with git is `git pull`.
 
 The task files can be synced to external tools if you want -- they're just JSON. But the files on disk are the source of truth.
+
+## Coordination between agents and programmatic checks
+
+The system combines two kinds of enforcement:
+
+- **Agents** understand semantics. They can decide whether a task makes sense, whether priorities are right, whether a description is sufficient.
+- **Programmatic checks** (linters, hooks, scripts) enforce structure. They catch duplicate IDs, invalid JSON, broken dependency references, missing fields.
+
+The combination matters. Agents handle the "is this meaningful?" question. Programs handle the "is this well-formed?" question. Neither alone is enough.
+
+This is analogous to journaling in a filesystem: the system declares intent ("I'm going to modify these tasks"), makes the change, then verifies the result is consistent. Checks happen at every transition. Rather than agents directly editing task JSON, a future improvement would be having agents call a small script or tool to enqueue changes — the tool handles the structural bookkeeping (IDs, dates, counters) while the agent provides the semantic content (what the task is and why it matters).
+
+## Parallel work and multi-agent coordination
+
+Right now, the task system assumes a single agent (or a single chain of agents) moving forward one commit at a time. This is like a single-processor system: one thread of execution, one state at a time.
+
+The analogy to multi-processing is obvious: what if multiple agents work in parallel on different tasks? Git worktrees are the natural mechanism — each agent works on its own branch with its own copy of the task state. The challenge is reconciliation: when parallel branches merge back, the task files might conflict. How do you merge two different versions of tasks.json that both added and completed different tasks?
+
+This could be handled the same way git handles any merge: PRs, conflict resolution, and merge commits. The orchestrator (or a dedicated merge agent) reviews the parallel branches and reconciles the state. The task linter runs on the merged result to verify consistency.
+
+This is a future problem. The single-threaded model works for now. But the system should be designed so that the transition to parallel work doesn't require rearchitecting the task format — just the coordination layer on top of it.
