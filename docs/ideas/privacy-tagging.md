@@ -2,9 +2,9 @@
 
 ## Concept
 
-Tasks carry metadata about what data they touch, and model runners have attributes specifying what data they're authorized to access. A local model running on-device might be authorized to access personal data (OmniFocus tasks, calendar, email), while a cloud model might not.
+Tasks carry metadata about what data they touch. Model runners have attributes specifying what data they're authorized to access. A local model running on-device might be authorized to access personal data (OmniFocus tasks, calendar, email), while a cloud model might not.
 
-This creates a constraint satisfaction problem for the scheduler: match tasks to model runners that satisfy both the capability requirements (model size, intelligence level) and the privacy requirements (data access authorization).
+The scheduler then has a constraint satisfaction problem: match tasks to model runners that satisfy both capability requirements (model size, intelligence level) and privacy requirements (data access authorization).
 
 ## Example
 

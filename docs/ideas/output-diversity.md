@@ -2,7 +2,7 @@
 
 ## The problem
 
-When spawning N agents in parallel with the same instructions, you want genuinely different approaches, not N copies of the same work. LLMs with the same prompt tend to produce similar outputs, especially at low temperature.
+When you spawn N agents in parallel with the same instructions, you want genuinely different approaches, not N copies of the same work. LLMs with the same prompt tend to produce similar outputs, especially at low temperature.
 
 ## Possible approaches
 

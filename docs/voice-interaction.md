@@ -2,9 +2,9 @@
 
 ## The idea
 
-The primary interaction mode with the development environment is voice. The developer speaks; the system listens, transcribes, and acts. Keyboard input is secondary -- used for code review, approval, and situations where precision matters more than speed.
+The primary interaction mode is voice. The developer speaks; the system listens, transcribes, and acts. Keyboard input is secondary, used for code review, approval, and situations where precision matters more than speed.
 
-This isn't about voice commands ("run tests", "commit"). It's about natural conversation with an intelligent agent: describing what you want to build, discussing architecture, reviewing progress, giving feedback. The same kind of conversation you'd have with a senior colleague, but with an AI agent that can also execute.
+This isn't about voice commands ("run tests", "commit"). It's about natural conversation with an intelligent agent: describing what you want to build, discussing architecture, reviewing progress, giving feedback. The same conversation you'd have with a senior colleague, but with an agent that can also execute.
 
 
 ## Architecture
@@ -37,9 +37,17 @@ The LLM should be the smartest model available for the synchronous conversation.
 
 ### Text-to-speech
 
-TTS is lower priority than STT and LLM quality. A lightweight, low-resource TTS is preferable because compute should be reserved for agents. High-fidelity voice synthesis is not needed for development work -- clear and understandable is sufficient.
+TTS is lower priority than STT and LLM quality. A lightweight, low-resource TTS is preferable because compute should go to agents. High-fidelity voice synthesis is not needed for development work. Clear and understandable is sufficient.
 
-The system should work as an audio-only interface when needed: the developer can walk around, no screen required. Like a phone call with an executive assistant who happens to be able to write code.
+Different agent roles could use different TTS voices so the developer can tell by ear who's speaking. The orchestrator, a researcher, and a test runner would each have a distinct voice.
+
+The system should work as an audio-only interface when needed. The developer can walk around, no screen required. Like a phone call with an assistant who happens to be able to write code.
+
+### Voice infrastructure
+
+LiveKit is the candidate for the audio communication layer. It handles transport (WebRTC, room management, audio routing) while leaving STT and TTS to the local pipeline. Running LiveKit locally in a Docker container keeps the audio loop on the local network for low latency.
+
+This also opens up remote access: calling in from a phone to interact with agents, queue tasks, or check on progress. The LiveKit cloud offering could bridge the gap between local and remote without changing the agent-side architecture.
 
 
 ## Hardware considerations

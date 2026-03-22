@@ -121,6 +121,54 @@
       "description": "Periodic automated security review of the codebase",
       "notes": "Configurable frequency. Dependency scanning, code review for common vulnerabilities, OWASP checks. Runs as a background agent on a schedule.",
       "added_date": "2026-03-22"
+    },
+    {
+      "id": "multi-voice-tts",
+      "description": "Distinct TTS voices for different agent roles",
+      "notes": "The developer should be able to tell by ear which agent is speaking. Orchestrator, researcher, test runner each get a different voice.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "agent-self-assessment",
+      "description": "Structured capability self-assessment for agents",
+      "notes": "Ask agents what they need to be effective. An employment interview pattern: what tools do you need, what are your limitations, what would make you better at this role.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "user-testing-api",
+      "description": "Wire up external human user testing via APIs",
+      "notes": "Services like usertesting.com. An agent should be able to commission a few humans to try something and report back.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "phone-call-in",
+      "description": "Call in from a phone to interact with agents",
+      "notes": "Via LiveKit cloud or similar. Queue tasks, check progress, have a conversation with the orchestrator from a mobile device.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "database-backed-tasks",
+      "description": "Evaluate database with constraints as task state backend",
+      "notes": "JSON files are the starting point, but a database could enforce constraints more naturally. Worth considering if the file-based approach hits scaling limits. Keep files as the interchange format.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "omnifocus-integration",
+      "description": "MCP server connecting agents to OmniFocus for real-world task management",
+      "notes": "A local agent with appropriate privacy tagging could interact with personal task management. Bridges the gap between coding tasks and real-world todos.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "multi-tier-validation",
+      "description": "Validation at configurable frequencies based on computational cost",
+      "notes": "Cheap structural checks run on every commit. Expensive semantic checks run less often. Full architecture reviews run on a schedule. Each tier has its own frequency.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "git-branching-strategy",
+      "description": "Define branching strategy for multi-agent parallel work",
+      "notes": "Stack management on main like a heartbeat. Feature work on branches. Cross-merging strategy for agents working in parallel. Needs thought about conflict resolution.",
+      "added_date": "2026-03-22"
     }
   ]
 }

@@ -1,4 +1,4 @@
-# Vision: The Semantic Operating System
+# The Semantic Operating System
 
 ## The core metaphor
 

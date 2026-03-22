@@ -14,7 +14,7 @@ Specialized agents handle specific domains: testing, security review, architectu
 
 ### Arbitrary depth
 
-The goal is that agents should be able to spawn sub-agents, which can spawn their own sub-agents, forming an arbitrarily deep tree. Current tooling has limitations here (e.g., Claude Code's subagent depth limit of 1), but the system should be designed for the general case. Workarounds exist (headless CLI invocations, separate processes), and the tooling will improve.
+Agents should be able to spawn sub-agents, which can spawn their own sub-agents, forming an arbitrarily deep tree. Current tooling has limitations here (e.g., Claude Code's subagent depth limit of 1), but the system should be designed for the general case. Workarounds exist (headless CLI invocations, separate processes), and the tooling will improve.
 
 The principle: don't design the architecture around a temporary platform limitation. Design for the ideal, implement workarounds where needed, and document which parts are workarounds.
 
@@ -69,7 +69,7 @@ Agents need to run at different frequencies and priorities.
 Borrowing from OS scheduling:
 
 - **Kernel-level**: Stack management, tool self-healing. Must always work. Runs on fast, reliable infrastructure.
-- **High priority**: The synchronous conversation with the developer. Low latency required.
+- **High priority**: The synchronous conversation with the developer. This is always the top priority among application-level tasks. The developer must be able to interrupt, redirect, or cancel any agent's work at any time. Nothing should block the conversational thread -- CI monitoring, long-running research, and test execution all happen in the background.
 - **Normal priority**: Active development tasks, test execution, CI monitoring.
 - **Background**: Security reviews, performance analysis, code quality sweeps. Run when resources are available.
 
@@ -83,13 +83,25 @@ Some work should happen on a schedule rather than on-demand:
 
 The scheduling mechanism should be configurable: register a task with a desired frequency, and the system runs it when the interval elapses. The specific thresholds (how often to run PM reviews, how to ramp the frequency) are configurable per project.
 
+### Task queue and utilization
+
+The system should maintain a queue of tasks ready to run, matched to available compute. On a machine running 24/7 (e.g., the M1 Max), the queue feeds async work continuously: security sweeps, code quality checks, research, test generation. Tasks are tagged with their minimum model requirements so the scheduler can map them to whatever hardware is available.
+
+The goal is high utilization of local compute, especially during off-hours. Pre-queue tasks during the day for overnight batch processing. The developer wakes up to completed work.
+
 ### Parallel execution
 
-Multiple agents should be able to work concurrently on independent tasks. Key considerations:
+Multiple agents should be able to work concurrently on independent tasks. The scheduling bias is breadth-first: advance many tasks a little rather than one task a lot. This prevents any single task from consuming all resources while others starve.
+
+Key considerations:
 - Tasks should be genuinely independent (no shared mutable state beyond the task file)
 - The orchestrator manages task assignment to avoid conflicts
 - Results are synthesized after parallel work completes
 - When sampling multiple approaches to a problem, ensure the agents explore genuinely different paths (not N copies of the same approach)
+
+### Task cancellation
+
+The scheduler must be able to kill running agents and remove tasks from the queue. This is a basic OS primitive. An agent that's gone down a rabbit hole or a task that's no longer relevant should be cancellable without side effects.
 
 
 ## Agent roles
@@ -110,6 +122,16 @@ These are example roles, not a fixed list. Projects should define the roles they
 
 Agents communicate through shared files, not direct messaging. The task file is the primary coordination mechanism. An agent needing work from another agent type creates a task in the backlog tagged for that role. The orchestrator (or scheduler) assigns it.
 
-This is intentionally simple. Direct agent-to-agent communication introduces complexity (message passing, synchronization, deadlocks). File-based communication through the task system is slower but more predictable, auditable, and debuggable.
+This is intentionally simple. Direct agent-to-agent communication introduces real complexity: message passing, synchronization, deadlocks. File-based communication through the task system is slower but more predictable, auditable, and debuggable.
 
 For cases where faster communication is needed, agents can write to designated output files that other agents monitor. But the task system remains the source of truth for what work has been requested and completed.
+
+### Status updates: push vs. poll
+
+Open design question: how do sub-agents report status back to the orchestrator? Polling (the orchestrator periodically checks output files) is simple but wasteful. Push-based updates (the sub-agent writes a status marker that triggers a notification) are more efficient but harder to implement in a file-based system.
+
+The current approach is file-based polling, which is good enough for now. As tooling improves (agent team communication, MCP-based task interfaces), push-based status updates may become practical.
+
+### Spending authorization
+
+Agents that incur costs (cloud API calls, external service usage) need some form of authorization. The developer shouldn't be interrupted for every API call, but there should be guardrails. A per-agent or per-task spending limit, with the developer approving anything beyond the limit, is the basic model.

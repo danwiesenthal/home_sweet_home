@@ -2,7 +2,7 @@
 
 ## Concept
 
-A reframing of the traditional R&D (Research and Development) loop. In many agentic workflows, the natural order is:
+A reframing of the R&D loop. In many agentic workflows, the natural order is reversed:
 
 1. **Develop**: Take an action. Write the code, make the change, build the thing.
 2. **Research**: Observe the results. Run tests, check behavior, gather feedback.

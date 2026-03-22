@@ -1,7 +1,5 @@
 # Task Management
 
-This document describes the task management system: its design, its philosophy, and how it works in practice.
-
 ## The problem
 
 AI coding agents are stateless between sessions. They lose context, forget what was planned, and can't see what other agents have done. Most task tracking solutions make this worse:
@@ -16,7 +14,7 @@ The filesystem is the one interface every tool shares. JSON on disk is the unive
 
 ### Structured JSON over prose
 
-Anthropic's research on agent tool use confirms what practitioners have observed: LLMs handle structured data more reliably than free text. Given a JSON schema with defined fields, an agent will fill in those fields predictably. Given a blank markdown file, it will invent its own format every time.
+LLMs handle structured data more reliably than free text. Given a JSON schema with defined fields, an agent fills in those fields predictably. Given a blank markdown file, it invents its own format every time.
 
 JSON also enables machine validation. A linter can check that every task has an ID, that dependency references resolve, that completed tasks have dates. You can't lint a bullet list.
 
@@ -36,7 +34,7 @@ The three files cover the full lifecycle without any single file growing unwield
 
 ### Git as the state machine
 
-Every meaningful state change to the task files gets a git commit. This is not just version control -- it's the system's clock. Each commit is a discrete state transition with a timestamp, an author, and a message that captures why the change happened.
+Every meaningful state change to the task files gets a git commit. This isn't just version control; it's the system's clock. Each commit is a discrete state transition with a timestamp, an author, and a message that captures why the change happened.
 
 This gives you:
 
@@ -64,7 +62,7 @@ At configurable thresholds (set in `review_thresholds`), the system can trigger 
 
 The thresholds are configurable per project. One possible approach is Fibonacci-spaced intervals (review at 5, 13, 21 modifications), which front-loads reviews when a project is young and spaces them out as it matures. But any schedule that fits your workflow is fine -- the mechanism is the counter, not a specific policy.
 
-A dedicated PM-oriented agent prompt can be designed for these reviews. The key idea is separation of concerns: the working agents focus on executing tasks, and a periodic review agent focuses on the health of the task graph itself.
+A dedicated PM-oriented agent prompt can handle these reviews. The working agents focus on executing tasks; a periodic review agent focuses on the health of the task graph itself.
 
 ## Task lifecycle
 
@@ -74,7 +72,7 @@ icebox --> backlog --> current --> completed --> archive
 
 ### Icebox
 
-Raw ideas. Low-commitment entries that capture something worth remembering. No particular format required beyond an ID and a description. Ideas live here until someone decides they're worth doing.
+Raw ideas. Low-commitment entries that capture something worth remembering. No format required beyond an ID and a description. Ideas live here until someone decides they're worth doing.
 
 ### Backlog
 
@@ -178,11 +176,11 @@ echo 'source "$REPO_ROOT/semantic_stack/scripts/hooks/pre-commit-tasks"' >> .git
 
 ## Why not GitHub Issues / Jira / Linear
 
-These tools are fine for human project management. They fail for agent-driven workflows because:
+These tools work for human project management. They fail for agent-driven workflows because:
 
 1. **Access requirements**: Agents in containers may not have API tokens or network access to external services.
 2. **Latency**: An API call to check task state adds seconds. Reading a local file takes milliseconds.
 3. **Format mismatch**: These tools store rich objects with comments, labels, assignees, and workflows that are irrelevant noise for an agent that just needs to know what to do next.
 4. **Sync complexity**: Keeping an external system in sync with local state is a distributed systems problem. Keeping a file in sync with git is `git pull`.
 
-The task files can be synced to external tools if desired -- they're just JSON. But the files on disk are the source of truth.
+The task files can be synced to external tools if you want -- they're just JSON. But the files on disk are the source of truth.

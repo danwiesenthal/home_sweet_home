@@ -1,10 +1,10 @@
 # Agent Instructions
 
-This file provides guidance to AI coding agents working in this repository. It follows the open AGENTS.md standard and is read by Claude Code, Cursor, Codex, Copilot, and other tools.
+Guidance for AI coding agents working in this repository. Follows the open AGENTS.md standard.
 
 ## What this repo is
 
-This is a development environment framework -- not an application. It defines conventions, tools, and configurations for agentic coding workflows. Changes here affect how agents operate in projects that adopt this framework.
+A development environment framework, not an application. It defines conventions, tools, and configurations for agentic coding workflows. Changes here affect how agents operate in projects that adopt this framework.
 
 ## Key principles
 

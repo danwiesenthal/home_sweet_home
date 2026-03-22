@@ -2,7 +2,7 @@
 
 ## The AGENTS.md standard
 
-AGENTS.md is an open standard (Linux Foundation, 60K+ projects) for providing instructions to AI coding agents. It's read by Claude Code, Cursor, Codex, GitHub Copilot, Windsurf, and others. Using AGENTS.md keeps your instructions tool-agnostic.
+AGENTS.md is an open standard (Linux Foundation, 60K+ projects) for providing instructions to AI coding agents. Claude Code, Cursor, Codex, GitHub Copilot, Windsurf, and others all read it. Using AGENTS.md keeps your instructions tool-agnostic.
 
 Place an `AGENTS.md` at the root of your repository. Agents will read it when starting work in that directory. Child directories can have their own `AGENTS.md` for directory-specific instructions.
 
@@ -42,7 +42,7 @@ Cursor reads `AGENTS.md`, `CLAUDE.md`, and `.cursorrules`. The `.cursor/rules/` 
 
 ## Subagent definitions
 
-When an orchestrator agent can spawn specialized subagents, each subagent needs a definition that covers:
+When an orchestrator can spawn specialized subagents, each subagent needs a definition that covers:
 
 1. **Role**: What this agent does (one sentence)
 2. **Architectural position**: This is a leaf agent. It cannot spawn sub-agents. It receives a task, does the work, returns results.
@@ -52,11 +52,11 @@ When an orchestrator agent can spawn specialized subagents, each subagent needs 
 
 ### Example roles
 
-These are starting points, not a fixed set. Define the roles your project needs.
+Starting points, not a fixed set. Define the roles your project needs.
 
 **Web searcher** (lightweight model): Fast information retrieval. Runs searches, returns raw excerpts with source URLs. Does not analyze or synthesize. Useful when the orchestrator will do the thinking.
 
-**Research orchestrator** (powerful model): Comprehensive research with synthesis. Formulates search strategy, executes searches, cross-references sources, delivers structured reports. Use when you need a complete answer, not raw data.
+**Research orchestrator** (powerful model): Multi-source research with synthesis. Formulates search strategy, executes searches, cross-references sources, delivers structured reports. Use when you need a complete answer, not raw data.
 
 **Meta-strategist** (powerful model): Advises on agent orchestration. Which agents to deploy, parallel vs. sequential, context window efficiency. A thinking partner for multi-agent decisions.
 
@@ -73,5 +73,14 @@ The model powering an agent should match the task's reasoning requirements, not 
 - **Lightweight models** (e.g., Haiku): Information retrieval, test execution, simple transformations. Tasks where speed and cost matter more than deep reasoning.
 - **Mid-tier models** (e.g., Sonnet): Most coding and analysis tasks. Good balance of capability and cost.
 - **Powerful models** (e.g., Opus): Complex reasoning, synthesis across many sources, architectural decisions. Tasks where getting the answer right matters more than speed.
+
+### Settings override pattern
+
+For agent and tool configuration that varies between team and individual:
+
+- `settings.json` is checked into git. It contains team-wide defaults: shared permissions, tool configurations, deny lists.
+- `settings.local.json` is gitignored. It contains local overrides: personal API keys, machine-specific paths, individual preferences.
+
+The local file overrides the shared file. This lets a team agree on baseline configuration while allowing each developer (or each machine) to customize without merge conflicts.
 
 See `../semantic_stack/agents/` for template definitions.
