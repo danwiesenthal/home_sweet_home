@@ -6,6 +6,24 @@ The primary interaction mode is voice. The developer speaks; the system listens,
 
 This isn't about voice commands ("run tests", "commit"). It's about natural conversation with an intelligent agent: describing what you want to build, discussing architecture, reviewing progress, giving feedback. The same conversation you'd have with a senior colleague, but with an agent that can also execute.
 
+## Two interaction modes
+
+The system should support both of these, and the developer should be able to switch between them:
+
+### Keyboard-toggle dictation
+
+What exists today. The developer uses an app like Super Whisper with push-to-talk (e.g., Option+Space). Toggle on, speak, toggle off. The transcribed text gets sent to the agent as if typed. The developer controls when they're speaking and when they've finished an utterance.
+
+This is lower latency to set up (just needs a local STT app) and works well for focused development sessions at a desk. The agent receives text; it doesn't need to handle audio.
+
+### Full-duplex audio channel
+
+A continuous, open audio channel between the developer and the agent — like a phone call. The developer speaks naturally without toggling anything. The system handles turn-taking, silence detection, and interruption.
+
+This mode requires the full STT → LLM → TTS pipeline. The agent needs to be able to speak back. LiveKit or similar handles the audio transport. The developer can walk around, work hands-free, check in from a phone.
+
+This is harder to build but more natural for certain workflows: reviewing progress while making coffee, dictating architecture thoughts on a walk, checking in on overnight batch results from a phone.
+
 
 ## Architecture
 

@@ -16,7 +16,7 @@ Without these capabilities, agents are limited to editing files and hoping the C
 
 The longer-term goal goes beyond Docker-in-Docker for a single agent. The entire development environment -- model routing proxy, voice pipeline services, agent containers, application services -- should be expressible as a Docker Compose configuration. Spin it up on any machine and get a working environment.
 
-This means the model router (LiteLLM or equivalent), any local model servers, the voice STT/TTS services, and the agent orchestration layer all run as containers that can talk to each other. The developer's machine just runs Docker and the voice input app. Everything else is inside the compose stack, reproducible across machines.
+This means the model routing proxy, any local model servers, the voice STT/TTS services, and the agent orchestration layer all run as containers that can talk to each other. The developer's machine runs a container engine (OrbStack, Colima, or equivalent) and a voice input method (Super Whisper for dictation, or a full-duplex audio channel via LiveKit). Everything else is inside the compose stack, reproducible across machines.
 
 
 ## Docker-in-Docker
@@ -121,8 +121,10 @@ The dev container should have access to CI/CD systems (CircleCI, GitHub Actions,
 - Read test output to diagnose failures
 - Understand the CI pipeline configuration
 
-This typically means providing API tokens as environment variables and including helper scripts that wrap CI API calls into simple commands agents can use.
+This means providing API tokens as environment variables and including helper scripts that wrap CI API calls into simple commands agents can use.
 
-A CI helper pattern that works well: a Python script with subcommands like `smart-monitor <commit>` (poll until build finishes, report results) and `debug <build_number>` (fetch full console output for a failed build).
+Ideally, CI failures should be push-based: when a build fails, the CI system notifies an agent directly (via webhook, or by creating a task) rather than the agent having to poll for status. The agent could be notified in an existing container it's already working in, or a fresh container could be spun up to investigate the failure. One investigator per branch, not per build — deduplication matters.
+
+Even with push-based notification as the goal, polling is the simpler starting point. A helper script with subcommands like `smart-monitor <commit>` (poll until build finishes, report results) and `debug <build_number>` (fetch full console output for a failed build) covers the basics.
 
 CI monitoring must be non-blocking. An agent waiting for a build should not hold up the developer's conversational thread. Run CI monitoring in the background and surface results when they arrive.
