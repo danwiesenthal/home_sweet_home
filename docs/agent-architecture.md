@@ -12,6 +12,8 @@ The system has one primary orchestrator agent and multiple specialized agents. T
 
 Specialized agents handle specific domains: testing, security review, architecture analysis, research, code generation. They receive well-defined tasks, produce outputs, and report back to the orchestrator.
 
+Not every agent needs to understand the semantic OS. Top-level agents (the orchestrator, the scheduler, the stack manager) need to know how the system operates: the file-based memory model, the commit-as-clock-cycle convention, the task lifecycle. Leaf agents don't. A leaf agent's contract is simple: here's your task, here's where to write your output, exit when done. This keeps leaf agent prompts focused and token-efficient -- they don't carry the overhead of the full system's operating manual.
+
 ### Arbitrary depth
 
 Agents should be able to spawn sub-agents, which can spawn their own sub-agents, forming an arbitrarily deep tree. Current tooling has limitations here (e.g., Claude Code's subagent depth limit of 1), but the system should be designed for the general case. Workarounds exist (headless CLI invocations, separate processes), and the tooling will improve.
@@ -27,6 +29,8 @@ A "security reviewer" agent and a "code generator" agent are role definitions. T
 - A top-tier model for complex reasoning tasks
 
 This separation means you define roles once and choose the intelligence level at invocation time based on the task's complexity, cost sensitivity, and latency requirements.
+
+Intelligence routing is bidirectional. A lightweight local model managing the task stack could spawn a powerful cloud model for a hard reasoning task. A mid-tier model could delegate upward to a top-tier model when it hits something beyond its capability. Don't assume agents can only spawn less-capable sub-agents -- that's an unnecessary constraint. The stack manager doesn't need to be the smartest model in the tree; it just needs to reliably manage state and dispatch work to models sized for each task.
 
 
 ## Model routing
@@ -133,6 +137,12 @@ Agents communicate through shared files, not direct messaging. The task file is 
 This is intentionally simple. Direct agent-to-agent communication introduces real complexity: message passing, synchronization, deadlocks. File-based communication through the task system is slower but more predictable, auditable, and debuggable.
 
 For cases where faster communication is needed, agents can write to designated output files that other agents monitor. But the task system remains the source of truth for what work has been requested and completed.
+
+### Observer agents
+
+Sometimes you want to check on a running agent without interrupting it. A manager-level agent with read-only access to another agent's working files can provide a summary of progress so far -- what's been done, what's in flight, what's left. The base agent keeps running undisturbed.
+
+This is useful when the developer asks "what's the security reviewer up to?" The orchestrator doesn't need to stop the reviewer; it spins up a lightweight observer that reads the reviewer's output files and summarizes the current state. The observer is ephemeral -- it reports back and exits.
 
 ### Status updates: push vs. poll
 

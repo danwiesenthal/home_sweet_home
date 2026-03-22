@@ -17,6 +17,8 @@ The working state of a project lives in text files on disk. Agents and humans bo
 
 Structured formats (JSON, TOML) are preferred for machine-readable state. Markdown is used for documentation and instructions. The key constraint: the files on disk must always reflect the true current state of the project.
 
+The I/O itself is low bandwidth -- agents read and write text files, one at a time, through a relatively narrow pipe. But natural language as an instruction set has high semantic bandwidth. A single sentence can capture a complex architectural decision. A paragraph can redirect an entire work stream. The system works despite primitive file-based I/O because the expressiveness of the language compensates for the narrowness of the channel. Precision in language matters here: we want to minimize ambiguity and maximize the semantic content per token written to disk.
+
 ### Git commits are clock cycles
 
 Every meaningful state change is captured as a git commit. The commit message describes the semantic meaning of what changed, not just which files were touched. This creates an auditable, replayable history of the project's evolution.
