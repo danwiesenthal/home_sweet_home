@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "created": "2026-03-22",
+    "purpose": "Single source of truth for task tracking across all agents and sessions",
+    "modification_count": 0,
+    "review_thresholds": [10, 25, 50],
+    "related_files": {
+      "tasks_archive.json": "Completed tasks cleared from here to reduce clutter",
+      "tasks_icebox.json": "Future ideas not yet queued for work"
+    }
+  },
+  "completed": [],
+  "current": [],
+  "backlog": [
+    {
+      "id": "example-task",
+      "title": "Example backlog task",
+      "description": "Replace this with real work. This exists to show the expected shape of a task entry.",
+      "depends_on": [],
+      "added_date": "2026-03-22"
+    }
+  ],
+  "context": {
+    "active_branch": "main",
+    "notes": "Task context goes here: active PRs, environment state, key document pointers. Anything an agent needs to orient itself before picking up work."
+  }
+}

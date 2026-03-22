@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "purpose": "Archive of completed tasks cleared from tasks.json to keep the active file focused",
+    "usage": "Move completed tasks here when tasks.json gets cluttered. Group by phase or time period."
+  },
+  "archived": []
+}

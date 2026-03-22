@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Pre-commit hook: run task linter when task files are staged.
+#
+# Install by symlinking or copying into .git/hooks/pre-commit, or by
+# sourcing this from an existing pre-commit hook.
+#
+# Only runs lint_tasks.py if any tasks/*.json file is staged for commit.
+# This avoids slowing down commits that don't touch task files.
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+TASKS_DIR="$REPO_ROOT/semantic_stack/tasks"
+LINT_SCRIPT="$REPO_ROOT/semantic_stack/scripts/lint_tasks.py"
+
+# Check if any task files are staged
+STAGED_TASK_FILES=$(git diff --cached --name-only -- 'semantic_stack/tasks/*.json' 2>/dev/null || true)
+
+if [ -z "$STAGED_TASK_FILES" ]; then
+    exit 0  # No task files staged, nothing to do
+fi
+
+if [ ! -f "$LINT_SCRIPT" ]; then
+    echo "warning: lint_tasks.py not found at $LINT_SCRIPT, skipping task lint"
+    exit 0
+fi
+
+echo "Running task lint..."
+python3 "$LINT_SCRIPT" "$TASKS_DIR"
+LINT_EXIT=$?
+
+if [ $LINT_EXIT -ne 0 ]; then
+    echo ""
+    echo "Task lint failed. Fix the issues above before committing."
+    echo "To skip this check (not recommended): git commit --no-verify"
+    exit 1
+fi

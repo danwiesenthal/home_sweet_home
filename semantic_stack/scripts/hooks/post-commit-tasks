@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Post-commit hook: increment modification_count when task files were committed.
+#
+# This runs after a successful commit. It checks if any tasks/*.json files
+# were part of the commit, and if so, increments the modification_count
+# in tasks.json and amends the commit.
+#
+# The counter enables periodic review cycles -- external tooling can check
+# the counter against configurable thresholds to trigger PM reviews.
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+TASKS_FILE="$REPO_ROOT/semantic_stack/tasks/tasks.json"
+
+# Check if any task files were in the last commit
+COMMITTED_TASK_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD -- 'semantic_stack/tasks/*.json' 2>/dev/null || true)
+
+if [ -z "$COMMITTED_TASK_FILES" ]; then
+    exit 0  # No task files in this commit
+fi
+
+if [ ! -f "$TASKS_FILE" ]; then
+    exit 0
+fi
+
+# Increment modification_count using Python (handles JSON properly)
+python3 -c "
+import json
+from pathlib import Path
+
+p = Path('$TASKS_FILE')
+data = json.loads(p.read_text())
+meta = data.get('meta', {})
+count = meta.get('modification_count', 0)
+if isinstance(count, int):
+    meta['modification_count'] = count + 1
+    data['meta'] = meta
+    p.write_text(json.dumps(data, indent=2) + '\n')
+    print(f'task modification_count: {count} -> {count + 1}')
+"
+
+# Stage and amend the counter update into the commit
+git add "$TASKS_FILE"
+git commit --amend --no-edit --no-verify

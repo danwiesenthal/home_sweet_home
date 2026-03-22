@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "purpose": "Ideas and future work not yet queued. Low commitment, high optionality.",
+    "usage": "Move items to tasks.json backlog when ready to work on them.",
+    "related_files": {
+      "tasks.json": "Active work (current, backlog, recently completed)",
+      "tasks_archive.json": "Historical completed tasks"
+    }
+  },
+  "icebox": [
+    {
+      "id": "pm-review-agent",
+      "description": "Dedicated PM agent that runs at review thresholds to audit task health",
+      "notes": "Should check for stale tasks, missing context, priority drift, orphaned dependencies. Triggered by modification_count crossing a threshold.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "task-visualization",
+      "description": "Script to render the task DAG as a dependency graph",
+      "notes": "Could output DOT format for Graphviz or a simple ASCII tree. Useful for spotting bottlenecks and orphaned chains.",
+      "added_date": "2026-03-22"
+    }
+  ]
+}
