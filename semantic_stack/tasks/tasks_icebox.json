@@ -19,6 +19,108 @@
       "description": "Script to render the task DAG as a dependency graph",
       "notes": "Could output DOT format for Graphviz or a simple ASCII tree. Useful for spotting bottlenecks and orphaned chains.",
       "added_date": "2026-03-22"
+    },
+    {
+      "id": "litellm-routing-layer",
+      "description": "Set up LiteLLM or similar proxy for model routing across local and cloud backends",
+      "notes": "Agents should be able to specify model requirements (capability level, latency, cost) and have requests routed to the appropriate backend. Supports swapping models without changing agent code.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "local-model-stack-manager",
+      "description": "Explore using a small local model as the stack manager process",
+      "notes": "The stack manager reads/writes/validates task state -- doesn't need deep reasoning. Could run on a lightweight local model, freeing expensive models for substantive work. Test whether a small model (e.g., Qwen 0.6B) can reliably manage JSON task files.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "voice-overseer-loop",
+      "description": "Implement the audio-only overseer interaction mode",
+      "notes": "A constant voice loop with the orchestrator agent. STT via local model, LLM for processing, lightweight TTS for responses. Should work hands-free, no screen required. Like a phone call with an executive assistant who can write code.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "livekit-integration",
+      "description": "Evaluate LiveKit for the voice communication layer",
+      "notes": "Could enable calling in from a phone to talk to agents. Handles the audio transport, leaving STT/TTS to the local pipeline.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "agent-spending-tracker",
+      "description": "Track API spending per agent and per task",
+      "notes": "Finance department concept from the vision. Should support budget limits so the developer isn't bothered for every penny but spending doesn't run away. Attribution of costs to specific PRs or work items.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "overnight-batch-queue",
+      "description": "Queue async tasks for overnight local execution",
+      "notes": "Take advantage of the M1/M3 Max running 24/7. Queue lower-priority tasks (security reviews, code quality sweeps, research) for overnight batch processing when the developer isn't actively working.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "ci-helper-script",
+      "description": "Python CLI tool for agents to monitor and debug CI builds",
+      "notes": "Subcommands: smart-monitor (poll until build finishes), debug (fetch full console output), list-failures. Wraps CircleCI or GitHub Actions API. Should not block the conversational thread -- run in background.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "mcp-server-for-tasks",
+      "description": "Consider an MCP server interface for the task management system",
+      "notes": "Could provide faster read/write to task state than git-commit-per-edit. Agents interact with tasks via MCP tool calls. Git commits happen at a coarser granularity for semantic state changes.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "writing-style-agent",
+      "description": "Agent that reviews text for AI writing tells and enforces natural prose style",
+      "notes": "Should stay updated on current AI writing patterns to avoid. Reviews documentation before it's committed. Checks for overused words, formulaic structure, excessive hedging, etc.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "bootstrap-setup-script",
+      "description": "Script to set up a fresh Mac with the full development environment",
+      "notes": "Install Homebrew, OrbStack, pyenv, Oh-My-Zsh, copy dotfiles, set up Claude Code with agent definitions, configure Super Whisper. Should be idempotent -- safe to re-run.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "toml-format-exploration",
+      "description": "Evaluate TOML as an alternative to JSON for human-readable structured data",
+      "notes": "Flagged as personally interesting -- TOML may be visually easier to parse than JSON for configuration files. Investigate whether task files or config could benefit from TOML format.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "engineering-summary-agent",
+      "description": "Periodic summary of engineering activity for the developer",
+      "notes": "CEO report concept: what was worked on, PRs merged, test results, blockers. Runs on a schedule. Helps the developer stay oriented without reading every commit.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "gesture-controls",
+      "description": "Explore physical gesture input via wearable ring device",
+      "notes": "Electric ring band for enter, escape, mode switching. Bimodal interaction: voice + gestures. No magic voice command words -- gestures handle the discrete actions.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "shared-stt-model-instance",
+      "description": "Share a single STT model instance between Super Whisper and the agentic system",
+      "notes": "Avoid loading the same NVIDIA Parakeet model twice. Super Whisper and the agent voice pipeline should be able to share one instance to save memory.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "kv-cache-optimization",
+      "description": "Investigate KV cache sharing between agents using the same local model",
+      "notes": "When batching tokens from different agents, leverage KV caching for shared context prefixes. Could significantly reduce inference cost for agents with similar system prompts.",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "ci-failure-notification",
+      "description": "Automatic agent spawning on CI failure",
+      "notes": "When a CI build fails, automatically create an agent to investigate. One agent per branch (not per build). Deduplication logic to avoid spawning redundant investigators. ",
+      "added_date": "2026-03-22"
+    },
+    {
+      "id": "security-review-agent",
+      "description": "Periodic automated security review of the codebase",
+      "notes": "Configurable frequency. Dependency scanning, code review for common vulnerabilities, OWASP checks. Runs as a background agent on a schedule.",
+      "added_date": "2026-03-22"
     }
   ]
 }

@@ -13,15 +13,24 @@
   "current": [],
   "backlog": [
     {
-      "id": "example-task",
-      "title": "Example backlog task",
-      "description": "Replace this with real work. This exists to show the expected shape of a task entry.",
+      "id": "bootstrap-task-generation",
+      "title": "Generate initial task backlog from vision docs",
+      "description": "Read docs/vision.md, docs/agent-architecture.md, docs/dev-containers.md, docs/voice-interaction.md, docs/task-management.md, and all docs/ideas/ files. Compare the documented vision against the current state of the repo. For each gap between vision and implementation, create a task in the backlog or icebox. Prioritize: structural/foundational work first (hooks, parsers, validation), then tooling (CI integration, model routing), then polish (voice pipeline, bootstrap scripts). This single task should produce the full initial task graph for the project.",
       "depends_on": [],
       "added_date": "2026-03-22"
     }
   ],
   "context": {
     "active_branch": "main",
-    "notes": "Task context goes here: active PRs, environment state, key document pointers. Anything an agent needs to orient itself before picking up work."
+    "repo": "danwiesenthal/percolate_stack",
+    "status": "Initial documentation and structure established. Vision docs, task management system (with functional linter and git hooks), agent templates, and devcontainer configs are in place. No application-level implementations yet -- the repo describes where we're headed and provides the tooling to track progress toward it.",
+    "key_docs": [
+      "docs/vision.md",
+      "docs/agent-architecture.md",
+      "docs/task-management.md",
+      "docs/dev-containers.md",
+      "docs/voice-interaction.md",
+      "docs/ideas/"
+    ]
   }
 }

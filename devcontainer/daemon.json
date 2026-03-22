@@ -1,0 +1,5 @@
+{
+  "storage-driver": "vfs",
+  "iptables": false,
+  "bridge": "none"
+}

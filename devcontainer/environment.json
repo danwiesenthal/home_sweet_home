@@ -1,0 +1,14 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "install": "devcontainer/install.sh",
+  "start": "sudo chmod 666 /var/run/docker.sock 2>/dev/null || true",
+  "terminals": [
+    {
+      "name": "Shell",
+      "command": "cd /workspace && bash"
+    }
+  ]
+}
