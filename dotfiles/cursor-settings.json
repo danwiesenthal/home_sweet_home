@@ -1,0 +1,80 @@
+// Cursor (VS Code-based) editor settings.
+// Copy to: ~/Library/Application Support/Cursor/User/profiles/<profile-id>/settings.json
+{
+    "workbench.colorTheme": "Default Light+",
+    "workbench.preferredDarkColorTheme": "SynthWave '84",
+    "workbench.preferredLightColorTheme": "Default Light+",
+    "editor.fontSize": 12,
+    "terminal.integrated.fontSize": 12,
+    "editor.minimap.enabled": false,
+    "editor.wordWrap": "bounded",
+    "editor.wrappingIndent": "deepIndent",
+    "editor.rulers": [88],
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.accessibilitySupport": "off",
+    "editor.inlineSuggest.enabled": true,
+    "editor.inlineSuggest.suppressSuggestions": true,
+    "diffEditor.renderSideBySide": false,
+    "explorer.confirmDragAndDrop": false,
+    "window.zoomLevel": 1,
+    "terminal.integrated.scrollback": 10000000,
+    "terminal.integrated.persistentSessionScrollback": 10000,
+    "workbench.colorCustomizations": {
+        "terminal.foreground": "#af76ce"
+    },
+
+    // Python
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnType": true,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "black-formatter.args": ["--line-length", "88"],
+    "isort.args": ["--profile", "black"],
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.autoFormatStrings": true,
+    "python.analysis.completeFunctionParens": true,
+    "python.analysis.fixAll": ["source.unusedImports"],
+    "python.testing.pytestEnabled": true,
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    "python.experiments.enabled": false,
+    "python.interpreter.infoVisibility": "always",
+    "python.missingPackage.severity": "Warning",
+    "python.createEnvironment.trigger": "off",
+
+    // SQL
+    "[sql]": {
+        "editor.formatOnSave": false
+    },
+
+    // Rewrap
+    "rewrap.autoWrap.enabled": true,
+    "rewrap.wholeComment": true,
+    "rewrap.doubleSentenceSpacing": true,
+    "rewrap.wrappingColumn": 88,
+
+    // Git
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "git.postCommitCommand": "sync",
+
+    // Cursor-specific
+    "cursor.chat.smoothStreaming": true,
+    "cursor.composer.shouldChimeAfterChatFinishes": true,
+    "cursor.composer.renderPillsInsteadOfBlocks": true,
+    "cursor.composer.collapsePaneInputBoxPills": true,
+    "cursor.composer.usageSummaryDisplay": "always",
+    "cursor.composer.textSizeScale": 1.15,
+    "cursor.cmdk.useThemedDiffBackground": true,
+    "cursor.diffs.useCharacterLevelDiffs": true,
+    "cursor.general.gitGraphIndexing": "enabled",
+    "cursor.terminal.usePreviewBox": true,
+    "cursor.cpp.disabledLanguages": ["scminput"],
+    "extensions.ignoreRecommendations": true,
+    "makefile.configureOnOpen": true,
+    "jupyter.themeMatplotlibPlots": true
+}

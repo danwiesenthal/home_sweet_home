@@ -19,17 +19,17 @@ Both are Docker-compatible. The percolate stack's container configurations work 
 ## Editor
 
 **Cursor** (based on VS Code). Key settings:
-- Python formatting: Black formatter, 79-char line length
+- Python formatting: Black formatter, 88-char line length (Black's default)
 - isort with Black profile
 - Auto-format on save with unused import cleanup
 - pytest enabled with auto-discovery on save
-- Word wrap at 79 chars
+- Word wrap at 88 chars
 
 ## Python
 
 **pyenv** + **pyenv-virtualenv** for Python version and environment management. Never install to the global Python.
 
-**UV** for fast package management within projects. **Ruff** for linting and formatting.
+**UV** for fast package management within projects. **Ruff** for linting and formatting. **ty** for type checking. All three from Astral.
 
 ## Voice input
 
@@ -39,9 +39,7 @@ Both are Docker-compatible. The percolate stack's container configurations work 
 
 **Claude Code CLI** as the primary agentic coding tool. Configured with custom subagents (see `../semantic_stack/agents/`).
 
-**Ollama** for local model inference. Models stored on a separate volume to avoid filling the boot drive.
-
-**LM Studio** for local model management and inference UI.
+**LM Studio** for local model management and inference. Preferred over Ollama for its model management UI and inference server.
 
 ## System monitoring
 

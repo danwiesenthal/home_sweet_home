@@ -120,23 +120,8 @@ if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 
-
-
-
-
-
-
-
-
 ### macOS
 alias tmclear='sudo tmutil thinlocalsnapshots / 1000000000000 1'
-
-
-
-
-
-
-
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"

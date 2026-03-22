@@ -7,6 +7,6 @@
 	name = Daniel Wiesenthal
 	email = danwiesenthal@users.noreply.github.com
 [core]
-	editor = code
+	editor = cursor
 [init]
 	defaultBranch = main
