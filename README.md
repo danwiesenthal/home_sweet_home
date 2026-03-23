@@ -1,33 +1,27 @@
 # Percolate Stack
 
-A development environment framework for agentic coding. Not just dotfiles, but a complete environment: task management, agent coordination, dev containers, voice interaction, and the conventions that tie them together.
+This is how I like to work with AI coding agents.
 
-The core idea is a "semantic operating system" where:
+It's a collection of conventions, tools, and ideas for agentic software development -- things like structured task management, agent orchestration patterns, dev container setups, and voice-first interaction. Some of it is working tooling, some of it is documented thinking about where this kind of development is headed.
 
-- **Files on disk are working memory** -- human-readable text files that agents and humans both read and write
-- **Git commits are clock cycles** -- every meaningful state change is captured as a commit
-- **Agents are processes** -- orchestrated, scheduled, and coordinated like OS processes
-- **The task stack is the call stack** -- a structured, linted, version-controlled record of what's being worked on
+The organizing metaphor is a "semantic operating system": treat your development environment the way an OS treats hardware, but at the level of language and meaning rather than bytes and registers.
 
-This is opinionated and personal. It reflects how one developer likes to work, but the patterns are general enough to adapt.
+- **Files on disk are working memory** -- human-readable text that agents and humans both read and write
+- **Git commits are clock cycles** -- every meaningful state change is a commit with a message that says why
+- **Agents are processes** -- scheduled, prioritized, and coordinated
+- **The task stack is the call stack** -- structured JSON, linted and version-controlled
 
-## Structure
+This is opinionated and personal. It reflects how one developer likes to work. The patterns are general enough to adapt, but I'm not trying to build a product here -- just trying to capture and refine my own setup.
 
-```
-docs/           Core concepts and philosophy
-semantic_stack/ Task management system, scripts, agent definitions
-devcontainer/   Docker-in-Docker setup for empowered agents
-dotfiles/       Shell config, themes, tool preferences
-```
+## What's in here
 
-## Getting started
-
-Clone this repo on a fresh machine, run the bootstrap setup (or point an AI coding agent at it and let it set things up), and get a configured development environment. Public dotfiles, but for agentic coding environments rather than just shell config.
-
-See `docs/` for the concepts. See `semantic_stack/` for the task management implementation. See `devcontainer/` for running agents in containers with full Docker access. See `dotfiles/` for shell and editor configuration.
+- **`docs/`** -- The ideas: vision, agent architecture, task management design, voice interaction, dev containers, and a handful of exploratory concepts that aren't fleshed out yet
+- **`semantic_stack/`** -- The implementation: a three-file JSON task system with a semantic linter, git hooks, and agent role definitions
+- **`devcontainer/`** -- Docker-in-Docker configuration so agents can run containers, test multi-service apps, and generally do everything a human developer can do
+- **`dotfiles/`** -- Shell config, editor settings, tool preferences, Claude Code status line and skills
 
 ## Status
 
-Work in progress. The documentation and tooling structure are in place. The voice pipeline, model routing, and full containerized stack are ahead. See `semantic_stack/tasks/` for what's planned.
+Work in progress. The documentation and core tooling are in place. The voice pipeline, model routing layer, and full containerized stack are future work. `semantic_stack/tasks/tasks_icebox.json` has the list of ideas queued up.
 
-Established March 2026.
+Initial version published March 22, 2026.
