@@ -160,5 +160,3 @@ Conversation JSONL files are at `~/.claude/projects/<sanitized-path>/`. Path san
 Cursor settings are at:
 - Main: `~/Library/Application Support/Cursor/User/settings.json`
 - Profiles: `~/Library/Application Support/Cursor/User/profiles/<profile-id>/settings.json`
-
-The active profile (DanCursor) is at `profiles/33e26b2d/settings.json`.
