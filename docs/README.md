@@ -1,6 +1,6 @@
 # Documentation
 
-Core concepts and philosophy behind the percolate stack.
+Core concepts and philosophy.
 
 ## Contents
 

@@ -2,7 +2,7 @@
 
 ## The core metaphor
 
-Traditional operating systems manage hardware resources through abstractions: processes, memory, filesystems, scheduling. The percolate stack applies this thinking to agentic software development.
+Traditional operating systems manage hardware resources through abstractions: processes, memory, filesystems, scheduling. This applies that thinking to agentic software development.
 
 The central idea is that a development environment with multiple AI agents needs the same kinds of primitives an OS provides -- working memory, a clock, process management, and a scheduler -- but implemented at a semantic level where the "instructions" are natural language and the "state" is human-readable text.
 
@@ -55,7 +55,7 @@ See [task-management.md](task-management.md) for the full system design.
 
 The goal is code that a developer can read and understand without extensive archaeology. No comprehension debt. If a clever optimization makes the code harder to follow, it's not worth it unless there's a measured performance need.
 
-This applies doubly to the percolate stack itself: the conventions and tools should be straightforward and explainable.
+This applies doubly here: the conventions and tools should be straightforward and explainable.
 
 ### Tool self-healing
 

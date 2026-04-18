@@ -22,7 +22,7 @@
   ],
   "context": {
     "active_branch": "main",
-    "repo": "danwiesenthal/percolate_stack",
+    "repo": "danwiesenthal/home_sweet_home",
     "status": "Initial documentation and structure established. Vision docs, task management system (with functional linter and git hooks), agent templates, and devcontainer configs are in place. No application-level implementations yet -- the repo describes where we're headed and provides the tooling to track progress toward it.",
     "key_docs": [
       "docs/vision.md",

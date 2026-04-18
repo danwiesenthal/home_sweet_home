@@ -1,17 +1,12 @@
-# Percolate Stack
+# home_sweet_home
 
 This is how I like to work with AI coding agents.
 
-It's a collection of conventions, tools, and ideas for agentic software development -- things like structured task management, agent orchestration patterns, dev container setups, and voice-first interaction. Some of it is working tooling, some of it is documented thinking about where this kind of development is headed.
+Think of it as a modern take on dotfiles -- except instead of just shell config and editor settings, it includes patterns for working with multiple agents, structured task tracking, and dev container setups. Some of it is working tooling, some of it is documented thinking about where this kind of development is headed.
 
-The organizing metaphor is a "semantic operating system": treat your development environment the way an OS treats hardware, but at the level of language and meaning rather than bytes and registers.
+The organizing metaphor is a "semantic operating system": treat the dev environment the way an OS treats hardware, but at the level of language and meaning -- files as working memory, git commits as clock cycles, agents as processes.
 
-- **Files on disk are working memory** -- human-readable text that agents and humans both read and write
-- **Git commits are clock cycles** -- every meaningful state change is a commit with a message that says why
-- **Agents are processes** -- scheduled, prioritized, and coordinated
-- **The task stack is the call stack** -- structured JSON, linted and version-controlled
-
-This is opinionated and personal. It reflects how one developer likes to work. The patterns are general enough to adapt, but I'm not trying to build a product here -- just trying to capture and refine my own setup.
+This is opinionated and personal. It reflects how one developer likes to work. The patterns are general enough to adapt, but I'm not trying to build a product here -- just a place to capture and refine my own setup.
 
 ## What's in here
 

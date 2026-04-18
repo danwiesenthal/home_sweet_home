@@ -1,6 +1,6 @@
 # Agent Definitions
 
-Template subagent definitions for use with the percolate stack.
+Subagent definitions for this setup.
 
 These templates follow the Claude Code agent definition format (markdown with YAML frontmatter), but the concepts are tool-agnostic. Adapt the format if using a different agent framework.
 

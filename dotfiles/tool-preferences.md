@@ -14,7 +14,7 @@ Key packages: `pyenv`, `pyenv-virtualenv`, `node`, `gh` (GitHub CLI), `git`, `tm
 
 **Colima** as an alternative CLI-only Docker runtime. Works well if you don't need OrbStack's GUI.
 
-Both are Docker-compatible. The percolate stack's container configurations work with either.
+Both are Docker-compatible. The container configs here work with either.
 
 ## Editor
 
