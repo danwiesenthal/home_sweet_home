@@ -1,0 +1,422 @@
+{
+  "BTTPresetCreatorNotes": "",
+  "BTTPresetInfoURL": "",
+  "BTTPresetName": "Default",
+  "BTTPresetColor": "135.184000, 181.050000, 9.052500, 255.000000",
+  "BTTPresetUUID": "18302105-9A0F-48AB-9ED7-9B7CF3E4D67B",
+  "BTTPresetContent": [
+    {
+      "BTTAppBundleIdentifier": "com.apple.finder",
+      "BTTAppName": "Finder",
+      "BTTAppAutoInvertIcon": 1,
+      "BTTTriggers": []
+    },
+    {
+      "BTTAppBundleIdentifier": "BT.G",
+      "BTTAppName": "Global",
+      "BTTAppAutoInvertIcon": 1,
+      "BTTAppSpecificSettings": {
+        "BTTDisableGlobalTriggers": false
+      },
+      "BTTTriggers": [
+        {
+          "BTTLastUpdatedAt": 1774304002.442111,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "E46BBE22-EC27-4082-B0A4-DC4AF36C1143",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "i",
+          "BTTShortcutKeyCode": 34,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 5,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303813.616418,
+              "BTTTriggerParentUUID": "E46BBE22-EC27-4082-B0A4-DC4AF36C1143",
+              "BTTIsPureAction": true,
+              "BTTUUID": "32FEEA65-E6EA-42D7-B4B8-69BF9B0B64D4",
+              "BTTPredefinedActionType": 109,
+              "BTTPredefinedActionName": "Resize window to Middle Third",
+              "BTTOrder": 7
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.4421592,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "AB7639F6-65DF-4E53-8BE7-024C43261413",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "d",
+          "BTTShortcutKeyCode": 2,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 10,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303931.438857,
+              "BTTTriggerParentUUID": "AB7639F6-65DF-4E53-8BE7-024C43261413",
+              "BTTIsPureAction": true,
+              "BTTUUID": "7A99453E-B0BA-4828-AD93-B4D537AE20C4",
+              "BTTPredefinedActionType": 93,
+              "BTTPredefinedActionName": "Resize Window to Bottom Right Quarter  or  Corner",
+              "BTTOrder": 14
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.442095,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "AD8F747D-24A2-40D4-A9F2-CD6A7BC5328A",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "u",
+          "BTTShortcutKeyCode": 32,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 4,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303802.2157001,
+              "BTTTriggerParentUUID": "AD8F747D-24A2-40D4-A9F2-CD6A7BC5328A",
+              "BTTIsPureAction": true,
+              "BTTUUID": "34C4A489-6A92-42CD-8554-744CA6A8EAEE",
+              "BTTPredefinedActionType": 108,
+              "BTTPredefinedActionName": "Resize window to Left Third",
+              "BTTOrder": 6
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.442116,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "1DC912CF-FB04-4688-A6E9-CCB817BF63F0",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "y",
+          "BTTShortcutKeyCode": 16,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 0,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303729.9290771,
+              "BTTTriggerParentUUID": "1DC912CF-FB04-4688-A6E9-CCB817BF63F0",
+              "BTTIsPureAction": true,
+              "BTTUUID": "92A73AD3-A81D-4823-8C3E-4BE2429ED7EA",
+              "BTTPredefinedActionType": 19,
+              "BTTPredefinedActionName": "Maximize Window Left Half",
+              "BTTOrder": 2
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.442163,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "B8591CAC-9276-4518-B2F1-63BD7A910566",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "7",
+          "BTTShortcutKeyCode": 26,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 2,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303777.113826,
+              "BTTTriggerParentUUID": "B8591CAC-9276-4518-B2F1-63BD7A910566",
+              "BTTIsPureAction": true,
+              "BTTUUID": "5D4F081B-CDA3-4AF6-BDA2-20E28106E4EF",
+              "BTTPredefinedActionType": 96,
+              "BTTPredefinedActionName": "Maximize Window to Top Half",
+              "BTTOrder": 4
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.4421391,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "8AD4AE1B-1E9A-49CC-B4DE-B2FA6D0210C6",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "o",
+          "BTTShortcutKeyCode": 31,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 6,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303839.566792,
+              "BTTTriggerParentUUID": "8AD4AE1B-1E9A-49CC-B4DE-B2FA6D0210C6",
+              "BTTIsPureAction": true,
+              "BTTUUID": "A789AA49-FE65-4F3E-8929-EB4ACE690AFB",
+              "BTTPredefinedActionType": 110,
+              "BTTPredefinedActionName": "Resize window to Right Third",
+              "BTTOrder": 9
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.44215,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "77F6C2AD-02BC-401B-90C0-BE4971D12E74",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "w",
+          "BTTShortcutKeyCode": 13,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 7,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303857.268683,
+              "BTTTriggerParentUUID": "77F6C2AD-02BC-401B-90C0-BE4971D12E74",
+              "BTTIsPureAction": true,
+              "BTTUUID": "2EDD5AC9-CEB4-4293-BFB8-7E4A966CCB9C",
+              "BTTPredefinedActionType": 90,
+              "BTTPredefinedActionName": "Resize Window to Top Left Quarter  or  Corner",
+              "BTTOrder": 10
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.4421458,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "AF4E2964-EF69-4A30-A563-13075049CAA6",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "e",
+          "BTTShortcutKeyCode": 14,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 8,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303900.720173,
+              "BTTTriggerParentUUID": "AF4E2964-EF69-4A30-A563-13075049CAA6",
+              "BTTIsPureAction": true,
+              "BTTUUID": "809D743B-CC3D-438B-8322-5CEB76562E4E",
+              "BTTPredefinedActionType": 92,
+              "BTTPredefinedActionName": "Resize Window to Top Right Quarter  or  Corner",
+              "BTTOrder": 12
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.442126,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "A15411E9-8F6A-4F30-90CC-6D789BDD2251",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": ".",
+          "BTTShortcutKeyCode": 47,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 13,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303999.297195,
+              "BTTTriggerParentUUID": "A15411E9-8F6A-4F30-90CC-6D789BDD2251",
+              "BTTIsPureAction": true,
+              "BTTUUID": "C1090F84-60E2-4254-88E9-2B29D4C82F53",
+              "BTTPredefinedActionType": 21,
+              "BTTPredefinedActionName": "Maximize Window",
+              "BTTOrder": 17
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.442143,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "6A2F2E30-471B-4924-8025-F88ACBBDCC7F",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "s",
+          "BTTShortcutKeyCode": 1,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 9,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303915.8538961,
+              "BTTTriggerParentUUID": "6A2F2E30-471B-4924-8025-F88ACBBDCC7F",
+              "BTTIsPureAction": true,
+              "BTTUUID": "D6F03D6D-2BBC-4170-9635-1434D58D1EE6",
+              "BTTPredefinedActionType": 91,
+              "BTTPredefinedActionName": "Resize Window to Bottom Left Quarter  or  Corner",
+              "BTTOrder": 13
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.4421349,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "A57CC887-B7BE-4F0E-B178-28AB69C40B66",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "h",
+          "BTTShortcutKeyCode": 4,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 12,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303971.9075851,
+              "BTTTriggerParentUUID": "A57CC887-B7BE-4F0E-B178-28AB69C40B66",
+              "BTTIsPureAction": true,
+              "BTTUUID": "32F937D2-4779-40C7-A5BC-EEA05A94B17A",
+              "BTTPredefinedActionType": 175,
+              "BTTPredefinedActionName": "Resize window to Right Two Thirds",
+              "BTTOrder": 16
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.44213,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "967AC75B-5BD2-4B05-9CF8-939EB0B9EBBE",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "p",
+          "BTTShortcutKeyCode": 35,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 1,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303765.063157,
+              "BTTTriggerParentUUID": "967AC75B-5BD2-4B05-9CF8-939EB0B9EBBE",
+              "BTTIsPureAction": true,
+              "BTTUUID": "89499602-3BB2-4653-8518-65A152B4386A",
+              "BTTPredefinedActionType": 20,
+              "BTTPredefinedActionName": "Maximize Window Right Half",
+              "BTTOrder": 3
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.442121,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "0B04A271-66C9-482A-8CF0-8B23EA10B226",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "g",
+          "BTTShortcutKeyCode": 5,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 11,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303951.839448,
+              "BTTTriggerParentUUID": "0B04A271-66C9-482A-8CF0-8B23EA10B226",
+              "BTTIsPureAction": true,
+              "BTTUUID": "BDD932E7-4B94-43BD-B0EB-494DECD6B28A",
+              "BTTPredefinedActionType": 174,
+              "BTTPredefinedActionName": "Resize window to Left Two Thirds",
+              "BTTOrder": 15
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304008.0651479,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "CB5C3034-C9D9-471C-8D36-D475ED9FE482",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": ",",
+          "BTTShortcutKeyCode": 43,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 14,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774304016.131702,
+              "BTTTriggerParentUUID": "CB5C3034-C9D9-471C-8D36-D475ED9FE482",
+              "BTTIsPureAction": true,
+              "BTTUUID": "79F17451-C7CB-4360-91A7-E4AA682713D7",
+              "BTTPredefinedActionType": 97,
+              "BTTPredefinedActionName": "Center Window",
+              "BTTOrder": 18
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt": 1774304002.442106,
+          "BTTTriggerType": 0,
+          "BTTTriggerClass": "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID": "A93CC7C8-3611-490F-8901-128090F70413",
+          "BTTAdditionalConfiguration": "917539",
+          "BTTShortcutKeyboardType": 13939,
+          "BTTTriggerOnDown": 1,
+          "BTTLayoutIndependentChar": "m",
+          "BTTShortcutKeyCode": 46,
+          "BTTShortcutAdvancedModifierKeys": "917539",
+          "BTTShortcutModifierKeys": 917504,
+          "BTTOrder": 3,
+          "BTTAutoAdaptToKeyboardLayout": 0,
+          "BTTActionsToExecute": [
+            {
+              "BTTLastUpdatedAt": 1774303787.948145,
+              "BTTTriggerParentUUID": "A93CC7C8-3611-490F-8901-128090F70413",
+              "BTTIsPureAction": true,
+              "BTTUUID": "29BE6947-136E-47C0-B91C-19F04A61BC31",
+              "BTTPredefinedActionType": 95,
+              "BTTPredefinedActionName": "Maximize Window to Bottom Half",
+              "BTTOrder": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "BTTAppBundleIdentifier": "BT.L",
+      "BTTAppName": "Recently Used",
+      "BTTAppAutoInvertIcon": 1,
+      "BTTTriggers": []
+    }
+  ],
+  "BTTPresetSnapAreas": []
+}
