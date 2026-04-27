@@ -70,7 +70,7 @@ ZSH_THEME="danwiesenthal"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git macos pyenv)
+plugins=(git macos zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -105,19 +105,8 @@ fi
 ## Debugging shortcut
 alias debug='python -m pdb -c continue'
 
-## Clean Directories
+## Don't write .pyc files
 export PYTHONDONTWRITEBYTECODE=1
-
-## Pip
-alias pip_uninstall_all='pip freeze | xargs pip uninstall -y'
-alias npip='pip_uninstall_all && pip install --upgrade pip && pip install pip-tools'
-
-## Pyenv-virtualenv
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-
-## Evaluate future behavior of prompt
-# pyenv-virtualenv: prompt changing will be removed from future release. configure `export PYENV_VIRTUALENV_DISABLE_PROMPT=1' to simulate the behavior.
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 
 ### macOS

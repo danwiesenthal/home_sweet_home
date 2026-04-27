@@ -16,7 +16,12 @@ function battery_charge {
 }
 
 function virtualenv_info {
-    [ "$(pyenv version-name)" != "system" ] && echo '('`pyenv version-name`') '
+    [ -z "$VIRTUAL_ENV" ] && return
+    local env_name=${VIRTUAL_ENV:t}
+    if [ "$env_name" = ".venv" ] || [ "$env_name" = "venv" ]; then
+        env_name=${VIRTUAL_ENV:h:t}
+    fi
+    echo "($env_name) "
 }
 
 PROMPT='

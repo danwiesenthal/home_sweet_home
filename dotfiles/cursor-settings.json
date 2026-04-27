@@ -1,6 +1,7 @@
 // Cursor (VS Code-based) editor settings.
 // Copy to: ~/Library/Application Support/Cursor/User/profiles/<profile-id>/settings.json
 {
+    "window.autoDetectColorScheme": true,
     "workbench.colorTheme": "Default Light+",
     "workbench.preferredDarkColorTheme": "SynthWave '84",
     "workbench.preferredLightColorTheme": "Default Light+",
@@ -23,17 +24,16 @@
         "terminal.foreground": "#af76ce"
     },
 
-    // Python
+    // Python — ruff handles both formatting (black-compatible) and import sorting (isort-compatible)
     "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnType": true,
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
-            "source.organizeImports": "explicit"
+            "source.organizeImports.ruff": "explicit",
+            "source.fixAll.ruff": "explicit"
         }
     },
-    "black-formatter.args": ["--line-length", "88"],
-    "isort.args": ["--profile", "black"],
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.analysis.autoImportCompletions": true,
     "python.analysis.autoFormatStrings": true,

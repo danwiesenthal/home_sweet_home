@@ -6,7 +6,7 @@ Tools and applications that make up the local development environment. These are
 
 **Homebrew** for macOS package management. Install via https://brew.sh.
 
-Key packages: `pyenv`, `pyenv-virtualenv`, `node`, `gh` (GitHub CLI), `git`, `tmux`, `tree`, `pre-commit`.
+Key formulas: `node`, `gh` (GitHub CLI), `git`, `tmux`, `tree`, `pre-commit`, `uv`, `ruff`.
 
 ## Container runtime
 
@@ -14,26 +14,38 @@ Key packages: `pyenv`, `pyenv-virtualenv`, `node`, `gh` (GitHub CLI), `git`, `tm
 
 **Colima** as an alternative CLI-only Docker runtime. Works well if you don't need OrbStack's GUI.
 
-Both are Docker-compatible. The container configs here work with either.
+Both are Docker-compatible. The semantic stack's container configurations work with either.
 
 ## Editor
 
 **Cursor** (based on VS Code). Key settings:
-- Python formatting: Black formatter, 88-char line length (Black's default)
-- isort with Black profile
-- Auto-format on save with unused import cleanup
+- Python formatting: Ruff (black-compatible output, 88-char line length by default)
+- Ruff handles import sorting too (isort-compatible with black profile)
+- Auto-format on save + organize imports + fix-all on save
 - pytest enabled with auto-discovery on save
 - Word wrap at 88 chars
 
+Cursor extensions: `charliermarsh.ruff`, `stkb.rewrap`, Pylance (auto-pulled as `ms-python.python` / `anysphere.cursorpyright`).
+
 ## Python
 
-**pyenv** + **pyenv-virtualenv** for Python version and environment management. Never install to the global Python.
+**uv** for everything Python — version management, virtualenvs, package installs, project runners. Replaces pyenv + pyenv-virtualenv + pip + virtualenv + pip-tools. Never install to the global Python.
 
-**UV** for fast package management within projects. **Ruff** for linting and formatting. **ty** for type checking. All three from Astral.
+- `uv python install --default 3.13` — installs Python and puts `python`/`python3` shims in `~/.local/bin`
+- `uv init` / `uv venv` / `uv run` — per-project environments
+- `uv tool install <cli>` — global CLI tools in isolated envs
+
+**Ruff** for linting, formatting, and import sorting — supersedes black and isort (drop-in formatter; import sorting is isort-equivalent with black profile). **ty** for type checking.
+
+The modern Python triumvirate: **uv + ruff + ty** (all from Astral). Install ty as a uv tool: `uv tool install ty`.
 
 ## Voice input
 
 **Super Whisper** for speech-to-text on macOS. Push-to-talk via Option+Space. Runs transcription models locally.
+
+## Input and window management
+
+**BetterTouchTool** for custom trackpad gestures, keyboard shortcuts, and window snapping. Install via `brew install --cask bettertouchtool`.
 
 ## AI tools
 
@@ -44,6 +56,10 @@ Both are Docker-compatible. The container configs here work with either.
 ## System monitoring
 
 **iStat Menus** for system resource monitoring (CPU, memory, network, disk).
+
+## Display
+
+**Vivid** (getvivid.app) to unlock full panel brightness on macOS (reaches HDR-level brightness on non-HDR content). Install via `brew install --cask vivid-app`.
 
 ## Terminal
 
