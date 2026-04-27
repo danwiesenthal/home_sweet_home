@@ -14,7 +14,9 @@
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "effortLevel": "xhigh",
-  "voiceEnabled": true,
   "model": "opus",
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true,
   "autoCompact": false
 }

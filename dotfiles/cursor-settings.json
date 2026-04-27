@@ -76,5 +76,7 @@
     "cursor.cpp.disabledLanguages": ["scminput"],
     "extensions.ignoreRecommendations": true,
     "makefile.configureOnOpen": true,
-    "jupyter.themeMatplotlibPlots": true
+    "jupyter.themeMatplotlibPlots": true,
+    "cursor.general.reduceTransparency": true,
+    "cursor.general.fontSmoothingAntialiased": true
 }
