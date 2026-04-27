@@ -124,8 +124,8 @@ gh auth login   # prefer HTTPS + token; adds credentials for git push too
   7. GPU: processor history graph
   8. CPU: processor history graph
   9. Sensors: one of the fans (top) + total watts (bottom)
-  10. OrbStack
-  11. LM Studio
+  10. LM Studio
+  11. Vivid
   12. SuperWhisper
   13. Time Machine
   14. Sound
