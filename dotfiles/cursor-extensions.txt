@@ -1,0 +1,7 @@
+anysphere.cursorpyright
+anysphere.remote-ssh
+charliermarsh.ruff
+ms-python.debugpy
+ms-python.python
+robbowen.synthwave-vscode
+stkb.rewrap
