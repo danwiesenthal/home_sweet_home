@@ -19,7 +19,6 @@ User input likely comes from a speech-to-text dictation pipeline. Expect transcr
 ## Conventions
 
 - Don't auto-stage files. `git add` is a human review gate — the developer stages after reviewing diffs.
-- No AI attribution in commits. No "Co-Authored-By: Claude" or "Generated with" footers.
 - Comments should make sense in 6 months. Don't write comments relative to a diff ("moved this here", "removed the old version").
 - Documentation should read as natural prose. Avoid obvious AI writing patterns: no "delve", no "it's important to note", no emoji, no excessive bolding/italics, no formulaic structure.
 - Prefer structured data (JSON, TOML) over prose when machines need to read it.
