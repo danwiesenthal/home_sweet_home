@@ -1,4 +1,22 @@
 #!/bin/bash
+# Status line for Claude Code.
+#
+# Layout (Dan 2026-05-05 spec):
+#   Line 1: model_short │ context% │ 5h➞HH:MM ▓▓░ N% NhMm │ 7d➞dayHH:MM …
+#   Line 2: 7d window │ bat N% (⚡ if charging)
+#   Line 3: in ~/cwd
+#   Line 4: on <branch>   (omitted in non-git dirs)
+#
+# Color thresholds for context window AND usage bars: blue ≤25,
+# green ≤50, orange ≤75, red >75. Rationale: model performance
+# drops in the second half of the 1M context window, so the bar
+# should be green well into 50% rather than yellow at 70%.
+#
+# Tokens / cache-hit / session-spend are intentionally commented out
+# below — kept in source for easy re-enable, but excluded from the
+# rendered line by request 2026-05-05.
+#
+# Backup of the prior version: ~/.claude/statusline-command.sh.bak-2026-05-05
 
 input=$(cat)
 
@@ -8,29 +26,72 @@ model_name=$(echo "$input" | jq -r '.model.display_name')
 context_window=$(echo "$input" | jq '.context_window')
 cost_data=$(echo "$input" | jq '.cost')
 
+# Reasoning-effort suffix for the model slug. Source of truth is the
+# statusline input JSON (.effort.level) — this reflects the live
+# session value, including transient /effort overrides. NOT
+# settings.json: that's the persistent default and goes stale the
+# moment the user runs /effort during a session.
+effort_level=$(echo "$input" | jq -r '.effort.level // empty' 2>/dev/null)
+case "$effort_level" in
+    xhigh)  effort_short="xhigh" ;;
+    high)   effort_short="high"  ;;
+    medium) effort_short="med"   ;;
+    low)    effort_short="low"   ;;
+    "")     effort_short=""      ;;
+    *)      effort_short="$effort_level" ;;   # max, or any future label
+esac
+
 [[ "$current_dir" == "$HOME"* ]] \
     && dir_display="~${current_dir#$HOME}" \
     || dir_display="$current_dir"
 
 # ── Colors ────────────────────────────────────────────────────────────────────
+# Cool→warm palette: cyan (peaceful) → green → orange → red.
+# 2026-05-05 (Dan): switched the low-pressure end from \033[34m
+# (dark blue) to \033[36m (cyan, same as the model slug accent) —
+# easier on the eye for the steady-state colors that fill most of
+# the line most of the time.
 CYAN=$'\033[36m'
 GREEN=$'\033[32m'
-MAGENTA=$'\033[35m'
-YELLOW=$'\033[33m'
+ORANGE=$'\033[38;5;208m'   # 256-color orange (between yellow and red)
 RED=$'\033[31m'
-BRED=$'\033[91m'
+BRED=$'\033[91m'           # bright red (still used for ⚠ extra warning)
+MAGENTA=$'\033[35m'
 DIM=$'\033[2m'
 RESET=$'\033[0m'
 SEP=" ${DIM}│${RESET} "
 
 # ── Git branch ────────────────────────────────────────────────────────────────
-git_branch=""
+branch=""
 if git -C "$current_dir" rev-parse --git-dir > /dev/null 2>&1; then
     branch=$(git -C "$current_dir" branch --show-current 2>/dev/null)
-    [ -n "$branch" ] && git_branch=" ${MAGENTA}${branch}${RESET}"
 fi
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
+# Compact model id: "Opus 4.7 (1M context)" -> "op4.7-1M"
+shorten_model() {
+    local raw="$1" base="$1" suffix=""
+    case "$raw" in
+        *"(1M context)"*) suffix="-1M" ;;
+        *"(200k context)"*) suffix="-200k" ;;
+    esac
+    base="${raw% (*}"
+    local family version short
+    family="${base%% *}"
+    version="${base##* }"
+    case "$family" in
+        Opus)   short="op" ;;
+        Sonnet) short="so" ;;
+        Haiku)  short="hk" ;;
+        *)      # Unknown family — keep first 2 chars lowercased
+                short=$(printf '%s' "${family:0:2}" | tr '[:upper:]' '[:lower:]')
+                ;;
+    esac
+    # If family == version (single-word display name), don't double-print
+    [ "$family" = "$version" ] && version=""
+    printf "%s%s%s" "$short" "$version" "$suffix"
+}
 
 # Progress bar with optional pacing marker │
 make_bar() {
@@ -52,17 +113,47 @@ make_bar() {
     printf "%s" "$bar"
 }
 
-# Cool→warm color by fill %
+# Cool→warm color by fill % — for context window + 5h window.
+# 2026-05-05: blue→green→orange→red at 25/50/75. Rationale: Dan's
+# context-window perf drops in the second half, and 5h burn rates
+# warrant attention by mid-window so pacing can be adjusted before
+# limit pressure shows up.
 pct_color() {
     local p=$1
-    if   [ "$p" -ge 85 ] 2>/dev/null; then printf "%s" "$BRED"
-    elif [ "$p" -ge 70 ] 2>/dev/null; then printf "%s" "$YELLOW"
-    elif [ "$p" -ge 40 ] 2>/dev/null; then printf "%s" "$GREEN"
+    if   [ "$p" -ge 75 ] 2>/dev/null; then printf "%s" "$RED"
+    elif [ "$p" -ge 50 ] 2>/dev/null; then printf "%s" "$ORANGE"
+    elif [ "$p" -ge 25 ] 2>/dev/null; then printf "%s" "$GREEN"
     else                                    printf "%s" "$CYAN"
     fi
 }
 
-# Token abbreviation
+# Same palette, slacker thresholds — for the 7d window.
+# 2026-05-05 (Dan): 7d shouldn't go alarmist as early; flip to orange
+# only at 75 and red only at 90. Below 50 it stays peaceful (blue).
+pct_color_7d() {
+    local p=$1
+    if   [ "$p" -ge 90 ] 2>/dev/null; then printf "%s" "$RED"
+    elif [ "$p" -ge 75 ] 2>/dev/null; then printf "%s" "$ORANGE"
+    elif [ "$p" -ge 50 ] 2>/dev/null; then printf "%s" "$GREEN"
+    else                                    printf "%s" "$CYAN"
+    fi
+}
+
+# Battery color: high charge is peaceful (cyan, like the other meters
+# at low pressure), low charge is alarming (red). Inverted from
+# pct_color because for battery, full = good. Thresholds chosen so
+# orange kicks in around the "I should plug in soon" boundary and
+# red around the "do it now" boundary.
+bat_color() {
+    local p=$1
+    if   [ "$p" -lt 15 ] 2>/dev/null; then printf "%s" "$RED"
+    elif [ "$p" -lt 30 ] 2>/dev/null; then printf "%s" "$ORANGE"
+    elif [ "$p" -lt 50 ] 2>/dev/null; then printf "%s" "$GREEN"
+    else                                    printf "%s" "$CYAN"
+    fi
+}
+
+# Token abbreviation (kept for the commented-out tokens path)
 fmt_tok() {
     local n=$1
     if   [ "$n" -ge 10000 ] 2>/dev/null; then awk "BEGIN{printf\"%.0fk\",$n/1000}"
@@ -71,7 +162,23 @@ fmt_tok() {
     fi
 }
 
-# ── LINE 1: Model + context + location ───────────────────────────────────────
+# pmset → "bat ▓▓▓░░░░░░░ 30%" — meter shape consistent with the
+# context / 5h / 7d bars. Returns empty on desktop Mac (no battery)
+# so the caller can drop the segment cleanly.
+fetch_battery() {
+    local raw pct
+    raw=$(pmset -g batt 2>/dev/null) || return
+    [ -z "$raw" ] && return
+    pct=$(echo "$raw" | grep -oE '[0-9]+%' | head -1 | tr -d '%')
+    [ -z "$pct" ] && return
+    local col bar
+    col=$(bat_color "$pct")
+    bar=$(make_bar "$pct")
+    printf "%sbat %s %s%%%s" "$col" "$bar" "$pct" "$RESET"
+}
+
+# ── Context-window bar ────────────────────────────────────────────────────────
+# (built independently so it can land on line 1 with the model id)
 
 context_bar=""
 usage=$(echo "$context_window" | jq '.current_usage')
@@ -95,21 +202,10 @@ if [ "$usage" != "null" ]; then
     fi
 fi
 
-line1_parts=()
-line1_parts+=("${CYAN}${model_name}${RESET}")
-[ -n "$context_bar" ] && line1_parts+=("$context_bar")
-line1_parts+=("${GREEN}${dir_display}${git_branch}${RESET}")
-
-line1=""
-for part in "${line1_parts[@]}"; do
-    [ -z "$line1" ] && line1="$part" || line1="${line1}${SEP}${part}"
-done
-
-# ── LINE 2: Plan usage, tokens, cache, cost ──────────────────────────────────
-
-# Haiku probe: minimal API call to get rate limit headers
-# Always works — even 429 responses include utilization headers
-# Costs ~$0.00001 per probe, cached for 6 minutes
+# ── Plan-usage probe (5h + 7d + overage) ──────────────────────────────────────
+# Haiku probe: minimal API call to get rate limit headers.
+# Always works — even 429 responses include utilization headers.
+# Costs ~$0.00001 per probe, cached for 6 minutes.
 PROBE_CACHE="/tmp/claude_probe_cache.json"
 PROBE_TTL=360
 
@@ -148,7 +244,6 @@ fetch_probe() {
         -d '{"model":"claude-haiku-4-5-20251001","max_tokens":1,"messages":[{"role":"user","content":"x"}]}' \
         "https://api.anthropic.com/v1/messages" 2>/dev/null
 
-    # Extract rate limit headers
     local f_util f_reset s_util s_reset o_util o_reset o_use
     f_util=$(grep -i 'anthropic-ratelimit-unified-5h-utilization:' "$tmpheaders" | awk '{print $2}' | tr -d '\r\n')
     f_reset=$(grep -i 'anthropic-ratelimit-unified-5h-reset:' "$tmpheaders" | awk '{print $2}' | tr -d '\r\n')
@@ -174,7 +269,7 @@ fetch_probe() {
     fi
 }
 
-plan_5h="${DIM}5h:--${RESET}" plan_7d="${DIM}7d:--${RESET}" extra_str=""
+plan_5h="" plan_7d="" extra_str=""
 probe_json=$(fetch_probe 2>/dev/null)
 
 if [ -n "$probe_json" ]; then
@@ -192,10 +287,11 @@ if [ -n "$probe_json" ]; then
         [ "$elapsed" -lt 0 ] && elapsed=0
         [ "$elapsed" -gt "$window" ] && elapsed=$window
         tgt=$(( elapsed * 100 / window ))
-        # Reset label (e.g., "5pm")
-        rounded=$(( (f_reset_int + 1800) / 3600 * 3600 ))
-        lbl=$(date -r "$rounded" '+%-I%p' 2>/dev/null | tr '[:upper:]' '[:lower:]')
-        # Time remaining
+        # Reset label: precise HH:MM (no hour-rounding — Dan 2026-05-05).
+        # The API-returned reset is the actual moment; our display
+        # should reflect that, not a rounded "5pm" that hides 23 min.
+        lbl=$(date -r "$f_reset_int" '+%-I:%M%p' 2>/dev/null | tr '[:upper:]' '[:lower:]')
+        # Time remaining (always Hh Mm — Dan: actual minutes, not just hours)
         rem=$(( f_reset_int - now ))
         rem_str=""
         if [ "$rem" -gt 0 ]; then
@@ -221,18 +317,22 @@ if [ -n "$probe_json" ]; then
         [ "$elapsed" -lt 0 ] && elapsed=0
         [ "$elapsed" -gt "$window" ] && elapsed=$window
         tgt=$(( elapsed * 100 / window ))
-        # Reset label with day (e.g., "mon5pm")
-        rounded=$(( (s_reset_int + 1800) / 3600 * 3600 ))
-        lbl=$(date -r "$rounded" '+%a%-I%p' 2>/dev/null | tr '[:upper:]' '[:lower:]')
+        # Reset label: precise day+HH:MM.
+        lbl=$(date -r "$s_reset_int" '+%a%-I:%M%p' 2>/dev/null | tr '[:upper:]' '[:lower:]')
         # Time remaining
         rem=$(( s_reset_int - now ))
         rem_str=""
         if [ "$rem" -gt 0 ]; then
             days=$(( rem / 86400 ))
             hours=$(( (rem % 86400) / 3600 ))
-            [ "$days" -gt 0 ] && rem_str=" ${days}d${hours}h" || rem_str=" ${hours}h"
+            mins=$(( (rem % 3600) / 60 ))
+            if [ "$days" -gt 0 ]; then
+                rem_str=" ${days}d${hours}h"
+            else
+                rem_str=" ${hours}h${mins}m"
+            fi
         fi
-        col=$(pct_color "$p")
+        col=$(pct_color_7d "$p")
         bar=$(make_bar "$p" "$tgt")
         plan_7d="${col}7d➞${lbl} ${bar} ${p}%${rem_str}${RESET}"
     fi
@@ -246,7 +346,6 @@ if [ -n "$probe_json" ]; then
         OAUTH_CACHE="/tmp/claude_oauth_extra.json"
         OAUTH_BACKOFF="/tmp/claude_oauth_backoff"
         dollar_info=""
-        # Check if we have cached oauth data (even stale — dollar amounts don't change fast)
         if [ -f "$OAUTH_CACHE" ]; then
             extra_used=$(jq -r '.extra_usage.used_credits // empty' "$OAUTH_CACHE" 2>/dev/null)
             extra_limit=$(jq -r '.extra_usage.monthly_limit // empty' "$OAUTH_CACHE" 2>/dev/null)
@@ -256,10 +355,8 @@ if [ -n "$probe_json" ]; then
                 dollar_info=" ${used_fmt}/${limit_fmt}"
             fi
         fi
-        # Opportunistically refresh oauth (only if no backoff)
         if [ ! -f "$OAUTH_BACKOFF" ] || [ $(( now - $(stat -f %m "$OAUTH_BACKOFF" 2>/dev/null || echo 0) )) -gt 900 ]; then
             if [ -z "$(find "$OAUTH_CACHE" -newermt '10 minutes ago' 2>/dev/null)" ]; then
-                # Re-fetch token (was local to fetch_probe)
                 oauth_token=""
                 if [[ "$OSTYPE" == "darwin"* ]]; then
                     oauth_creds=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null)
@@ -286,7 +383,7 @@ if [ -n "$probe_json" ]; then
                     touch "$OAUTH_BACKOFF"
                 fi
                 rm -f "$otmp"
-                fi  # oauth_token
+                fi
             fi
         fi
         if [ "$op" -gt 0 ] 2>/dev/null; then
@@ -297,59 +394,95 @@ if [ -n "$probe_json" ]; then
     fi
 fi
 
-# Session token totals
-total_in=$(echo "$context_window" | jq '.total_input_tokens // empty')
-total_out=$(echo "$context_window" | jq '.total_output_tokens // empty')
+# ── Tokens / cache / spend (DISABLED 2026-05-05; kept for re-enable) ─────────
+# Per Dan 2026-05-05 these were not load-bearing on the visible line. The
+# computation stays here so re-enabling is just one assembly-array edit.
+#
+# total_in=$(echo "$context_window" | jq '.total_input_tokens // empty')
+# total_out=$(echo "$context_window" | jq '.total_output_tokens // empty')
+# token_str=""
+# if [ -n "$total_in" ] && [ "$total_in" != "null" ] && \
+#    [ -n "$total_out" ] && [ "$total_out" != "null" ]; then
+#     in_disp=$(fmt_tok "$total_in")
+#     out_disp=$(fmt_tok "$total_out")
+#     token_str="${DIM}i:${in_disp} o:${out_disp}${RESET}"
+# elif [ "$usage" != "null" ]; then
+#     in_disp=$(fmt_tok "$in_total")
+#     out_disp=$(fmt_tok "$(echo "$usage" | jq '.output_tokens // 0')")
+#     token_str="${DIM}i:${in_disp} o:${out_disp}${RESET}"
+# fi
+#
+# cache_str=""
+# if [ "$usage" != "null" ]; then
+#     input_tokens=$(echo "$usage" | jq '.input_tokens // 0')
+#     cache_read=$(echo "$usage"   | jq '.cache_read_input_tokens // 0')
+#     denom=$((input_tokens + cache_read))
+#     if [ "$denom" -gt 0 ] && [ "$cache_read" -gt 0 ]; then
+#         cpct=$((cache_read * 100 / denom))
+#         if   [ "$cpct" -ge 70 ]; then CACHE_COLOR=$GREEN
+#         elif [ "$cpct" -ge 40 ]; then CACHE_COLOR=$YELLOW
+#         else                          CACHE_COLOR=$RED
+#         fi
+#         cache_str="${CACHE_COLOR}⚡${cpct}%${RESET}"
+#     fi
+# fi
+#
+# cost_str=""
+# if [ "$cost_data" != "null" ]; then
+#     cost_usd=$(echo "$cost_data" | jq -r '.total_cost_usd // 0')
+#     if [ "$cost_usd" != "0" ] && [ "$cost_usd" != "null" ]; then
+#         cost_str="${DIM}s:\$$(printf "%.2f" "$cost_usd")${RESET}"
+#     fi
+# fi
 
-token_str=""
-if [ -n "$total_in" ] && [ "$total_in" != "null" ] && \
-   [ -n "$total_out" ] && [ "$total_out" != "null" ]; then
-    in_disp=$(fmt_tok "$total_in")
-    out_disp=$(fmt_tok "$total_out")
-    token_str="${DIM}i:${in_disp} o:${out_disp}${RESET}"
-elif [ "$usage" != "null" ]; then
-    in_disp=$(fmt_tok "$in_total")
-    out_disp=$(fmt_tok "$(echo "$usage" | jq '.output_tokens // 0')")
-    token_str="${DIM}i:${in_disp} o:${out_disp}${RESET}"
-fi
+# ── Assemble output ──────────────────────────────────────────────────────────
+# 2026-05-05 layout (Dan: built for thinner windows):
+#   Line 1: model + context + 5h (+ extra/overage warning when on)
+#   Line 2: 7d + battery
+#   Line 3: in <cwd> on <branch>
+# Empty lines skipped — desktop Mac (no battery) + LM Studio off
+# (no probe result) collapses to a 1-line output cleanly.
 
-# Cache hit rate
-cache_str=""
-if [ "$usage" != "null" ]; then
-    input_tokens=$(echo "$usage" | jq '.input_tokens // 0')
-    cache_read=$(echo "$usage"   | jq '.cache_read_input_tokens // 0')
-    denom=$((input_tokens + cache_read))
-    if [ "$denom" -gt 0 ] && [ "$cache_read" -gt 0 ]; then
-        cpct=$((cache_read * 100 / denom))
-        if   [ "$cpct" -ge 70 ]; then CACHE_COLOR=$GREEN
-        elif [ "$cpct" -ge 40 ]; then CACHE_COLOR=$YELLOW
-        else                          CACHE_COLOR=$RED
-        fi
-        cache_str="${CACHE_COLOR}⚡${cpct}%${RESET}"
-    fi
-fi
+model_short=$(shorten_model "$model_name")
+bat_str=$(fetch_battery)
 
-# Session cost (from Claude Code JSON — most accurate source)
-cost_str=""
-if [ "$cost_data" != "null" ]; then
-    cost_usd=$(echo "$cost_data" | jq -r '.total_cost_usd // 0')
-    if [ "$cost_usd" != "0" ] && [ "$cost_usd" != "null" ]; then
-        cost_str="${DIM}s:\$$(printf "%.2f" "$cost_usd")${RESET}"
-    fi
-fi
+# Line 1 — model (+ reasoning-effort suffix), context, 5h, overage if active
+model_slug="${CYAN}${model_short}${RESET}"
+[ -n "$effort_short" ] && model_slug="${model_slug}${DIM}·${RESET}${MAGENTA}${effort_short}${RESET}"
+line1_parts=("$model_slug")
+[ -n "$context_bar" ] && line1_parts+=("$context_bar")
+[ -n "$plan_5h"     ] && line1_parts+=("$plan_5h")
+[ -n "$extra_str"   ] && line1_parts+=("$extra_str")
 
-# ── Assemble line 2 ──────────────────────────────────────────────────────────
+line1=""
+for part in "${line1_parts[@]}"; do
+    [ -z "$line1" ] && line1="$part" || line1="${line1}${SEP}${part}"
+done
+
+# Line 2 — battery + 7d window (Dan 2026-05-05: battery first; quicker
+# glance for the meter Dan looks at most when laptop is unplugged).
 line2_parts=()
-[ -n "$plan_5h"   ] && line2_parts+=("$plan_5h")
-[ -n "$plan_7d"   ] && line2_parts+=("$plan_7d")
-[ -n "$extra_str" ] && line2_parts+=("$extra_str")
-[ -n "$token_str" ] && line2_parts+=("$token_str")
-[ -n "$cache_str" ] && line2_parts+=("$cache_str")
-[ -n "$cost_str"  ] && line2_parts+=("$cost_str")
+[ -n "$bat_str" ] && line2_parts+=("$bat_str")
+[ -n "$plan_7d" ] && line2_parts+=("$plan_7d")
 
 line2=""
 for part in "${line2_parts[@]}"; do
     [ -z "$line2" ] && line2="$part" || line2="${line2}${SEP}${part}"
 done
 
-printf "%s\n%s\n" "$line1" "$line2"
+# Line 3 — "in <cwd>". Line 4 — "on <branch>" (split off 2026-05-05
+# so the combined line doesn't overflow on long repo paths + branch
+# names). Small English prepositions in dim, values in their semantic
+# colors. Line 4 omitted in non-git dirs.
+line3="${DIM}in${RESET} ${GREEN}${dir_display}${RESET}"
+line4=""
+if [ -n "$branch" ]; then
+    line4="${DIM}on${RESET} ${MAGENTA}${branch}${RESET}"
+fi
+
+# Print only non-empty lines so a sparse environment doesn't render
+# blank rows.
+printf "%s\n" "$line1"
+[ -n "$line2" ] && printf "%s\n" "$line2"
+printf "%s\n" "$line3"
+[ -n "$line4" ] && printf "%s\n" "$line4"
