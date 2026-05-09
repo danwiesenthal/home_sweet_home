@@ -7,10 +7,15 @@
 #   Line 3: in ~/cwd
 #   Line 4: on <branch>   (omitted in non-git dirs)
 #
-# Color thresholds for context window AND usage bars: blue ≤25,
-# green ≤50, orange ≤75, red >75. Rationale: model performance
-# drops in the second half of the 1M context window, so the bar
-# should be green well into 50% rather than yellow at 70%.
+# Color thresholds (Dan 2026-05-09):
+#  - Context window (1M models): non-linear, by ABSOLUTE tokens,
+#    matching where model performance falls off. Blue ≤100k, green
+#    ≤256k, then yellow→orange→red through 400k/600k.
+#  - 5h / 7d usage: PACING-RELATIVE. Color tracks (usage% − time%):
+#    blue if under pace, green if on/slightly over, then
+#    yellow→orange→red as usage diverges above pace.
+#  - Battery: simple absolute thresholds — ≥80 blue, ≥60 green,
+#    ≥40 yellow, ≥20 orange, <20 red.
 #
 # Tokens / cache-hit / session-spend are intentionally commented out
 # below — kept in source for easy re-enable, but excluded from the
@@ -53,6 +58,7 @@ esac
 # the line most of the time.
 CYAN=$'\033[36m'
 GREEN=$'\033[32m'
+YELLOW=$'\033[38;5;220m'   # 256-color gold; sits naturally between green and orange-208
 ORANGE=$'\033[38;5;208m'   # 256-color orange (between yellow and red)
 RED=$'\033[31m'
 BRED=$'\033[91m'           # bright red (still used for ⚠ extra warning)
@@ -113,42 +119,48 @@ make_bar() {
     printf "%s" "$bar"
 }
 
-# Cool→warm color by fill % — for context window + 5h window.
-# 2026-05-05: blue→green→orange→red at 25/50/75. Rationale: Dan's
-# context-window perf drops in the second half, and 5h burn rates
-# warrant attention by mid-window so pacing can be adjusted before
-# limit pressure shows up.
-pct_color() {
-    local p=$1
-    if   [ "$p" -ge 75 ] 2>/dev/null; then printf "%s" "$RED"
-    elif [ "$p" -ge 50 ] 2>/dev/null; then printf "%s" "$ORANGE"
-    elif [ "$p" -ge 25 ] 2>/dev/null; then printf "%s" "$GREEN"
-    else                                    printf "%s" "$CYAN"
+# Context window: color by ABSOLUTE tokens used, not fill %.
+# 1M-context models perform best in the first 100k, decent through
+# 256k, then degrade. Past 256k transition through yellow→orange→red
+# so the bar reflects the model-quality cliff, not bar-fill geometry.
+# (Dan 2026-05-09 — replaces prior 25/50/75 fill-% thresholds.)
+pct_color_context() {
+    local tokens=$1
+    if   [ "$tokens" -ge 600000 ] 2>/dev/null; then printf "%s" "$RED"
+    elif [ "$tokens" -ge 400000 ] 2>/dev/null; then printf "%s" "$ORANGE"
+    elif [ "$tokens" -ge 256000 ] 2>/dev/null; then printf "%s" "$YELLOW"
+    elif [ "$tokens" -ge 100000 ] 2>/dev/null; then printf "%s" "$GREEN"
+    else                                            printf "%s" "$CYAN"
     fi
 }
 
-# Same palette, slacker thresholds — for the 7d window.
-# 2026-05-05 (Dan): 7d shouldn't go alarmist as early; flip to orange
-# only at 75 and red only at 90. Below 50 it stays peaceful (blue).
-pct_color_7d() {
-    local p=$1
-    if   [ "$p" -ge 90 ] 2>/dev/null; then printf "%s" "$RED"
-    elif [ "$p" -ge 75 ] 2>/dev/null; then printf "%s" "$ORANGE"
-    elif [ "$p" -ge 50 ] 2>/dev/null; then printf "%s" "$GREEN"
-    else                                    printf "%s" "$CYAN"
+# 5h / 7d windows: color by PACING DELTA (usage% − time-elapsed%).
+# Below pace = blue (under-using), on/slightly-over = green, then
+# yellow→orange→red as usage trends toward burning the window before
+# time runs out. (Dan 2026-05-09 — replaces prior absolute-fill
+# thresholds, which alarmed mid-window even when on pace.)
+pct_color_pacing() {
+    local usage=$1 target=$2
+    local delta=$(( usage - target ))
+    if   [ "$delta" -ge 30 ] 2>/dev/null; then printf "%s" "$RED"
+    elif [ "$delta" -ge 20 ] 2>/dev/null; then printf "%s" "$ORANGE"
+    elif [ "$delta" -ge 10 ] 2>/dev/null; then printf "%s" "$YELLOW"
+    elif [ "$delta" -ge 0  ] 2>/dev/null; then printf "%s" "$GREEN"
+    else                                       printf "%s" "$CYAN"
     fi
 }
 
 # Battery color: high charge is peaceful (cyan, like the other meters
-# at low pressure), low charge is alarming (red). Inverted from
-# pct_color because for battery, full = good. Thresholds chosen so
-# orange kicks in around the "I should plug in soon" boundary and
-# red around the "do it now" boundary.
+# at low pressure), low charge is alarming (red). Inverted from the
+# usage meters because for battery, full = good. Bands at 80/60/40/20
+# (Dan 2026-05-09) — blue down to 80, green to 60, yellow to 40,
+# orange to 20, red below.
 bat_color() {
     local p=$1
-    if   [ "$p" -lt 15 ] 2>/dev/null; then printf "%s" "$RED"
-    elif [ "$p" -lt 30 ] 2>/dev/null; then printf "%s" "$ORANGE"
-    elif [ "$p" -lt 50 ] 2>/dev/null; then printf "%s" "$GREEN"
+    if   [ "$p" -lt 20 ] 2>/dev/null; then printf "%s" "$RED"
+    elif [ "$p" -lt 40 ] 2>/dev/null; then printf "%s" "$ORANGE"
+    elif [ "$p" -lt 60 ] 2>/dev/null; then printf "%s" "$YELLOW"
+    elif [ "$p" -lt 80 ] 2>/dev/null; then printf "%s" "$GREEN"
     else                                    printf "%s" "$CYAN"
     fi
 }
@@ -196,7 +208,7 @@ if [ "$usage" != "null" ]; then
     fi
     if [ -n "$pct" ] && [ "$pct" != "null" ]; then
         pct=$(awk "BEGIN{printf\"%d\",$pct}")
-        col=$(pct_color "$pct")
+        col=$(pct_color_context "$in_total")
         bar=$(make_bar "$pct")
         context_bar="${col}${bar} ${pct}%${RESET}"
     fi
@@ -301,7 +313,7 @@ if [ -n "$probe_json" ]; then
                 rem_str=" $(( rem/60 ))m"
             fi
         fi
-        col=$(pct_color "$p")
+        col=$(pct_color_pacing "$p" "$tgt")
         bar=$(make_bar "$p" "$tgt")
         plan_5h="${col}5h➞${lbl} ${bar} ${p}%${rem_str}${RESET}"
     fi
@@ -332,7 +344,7 @@ if [ -n "$probe_json" ]; then
                 rem_str=" ${hours}h${mins}m"
             fi
         fi
-        col=$(pct_color_7d "$p")
+        col=$(pct_color_pacing "$p" "$tgt")
         bar=$(make_bar "$p" "$tgt")
         plan_7d="${col}7d➞${lbl} ${bar} ${p}%${rem_str}${RESET}"
     fi
@@ -481,8 +493,13 @@ if [ -n "$branch" ]; then
 fi
 
 # Print only non-empty lines so a sparse environment doesn't render
-# blank rows.
+# blank rows. Trailing `exit 0` prevents the script from inheriting
+# the exit status of the last `[ -n "$lineN" ]` test — when line2 or
+# line4 is empty (e.g. no git branch in /tmp, or no battery on a
+# desktop), that test returns 1 and Claude Code would treat the
+# statusline as failed.
 printf "%s\n" "$line1"
 [ -n "$line2" ] && printf "%s\n" "$line2"
 printf "%s\n" "$line3"
 [ -n "$line4" ] && printf "%s\n" "$line4"
+exit 0
