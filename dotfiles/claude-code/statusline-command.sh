@@ -11,9 +11,14 @@
 #  - Context window (1M models): non-linear, by ABSOLUTE tokens,
 #    matching where model performance falls off. Blue ≤100k, green
 #    ≤256k, then yellow→orange→red through 400k/600k.
-#  - 5h / 7d usage: PACING-RELATIVE. Color tracks (usage% − time%):
-#    blue if under pace, green if on/slightly over, then
-#    yellow→orange→red as usage diverges above pace.
+#  - 5h / 7d usage: PACING-RELATIVE with an absolute guard. Color
+#    tracks (usage% − time-elapsed%): blue under pace, green on/
+#    slightly-over (wide green band — being one block past the pace
+#    marker is still fine), then yellow→orange→red only as usage gets
+#    *significantly* ahead of pace; plus usage ≥90% floors at orange
+#    (nearly out) and ≥90% with real time left forces red (locked out
+#    for a while). Near the window's end a near-full bar stays orange,
+#    not red — a reset is close.
 #  - Battery: simple absolute thresholds — ≥80 blue, ≥60 green,
 #    ≥40 yellow, ≥20 orange, <20 red.
 #
@@ -134,20 +139,44 @@ pct_color_context() {
     fi
 }
 
-# 5h / 7d windows: color by PACING DELTA (usage% − time-elapsed%).
-# Below pace = blue (under-using), on/slightly-over = green, then
-# yellow→orange→red as usage trends toward burning the window before
-# time runs out. (Dan 2026-05-09 — replaces prior absolute-fill
-# thresholds, which alarmed mid-window even when on pace.)
+# 5h / 7d windows: pacing-aware color with an absolute-proximity guard.
+# Dan 2026-05-09 v2 — the v1 bands (yellow at just +10 over pace, i.e.
+# one block past the marker) alarmed too early. Rules now:
+#   delta = usage% − time-elapsed%
+#   - delta < 0          → blue (cyan)  — under pace, plenty of room
+#   - 0 ≤ delta < 20     → green        — on pace / slightly over: fine
+#   - 20 ≤ delta < 35    → yellow
+#   - 35 ≤ delta < 50    → orange
+#   - delta ≥ 50         → red          — burning the window far too fast
+# Plus an absolute guard — "ahead of pace" only bites if you're actually
+# near the cap:
+#   - usage ≥ 90%                        → at least orange (nearly out)
+#   - usage ≥ 90% AND time-elapsed ≤ 65% → red (maxed with real time
+#                                           left = locked out a while)
+# Near the window's end the small delta + the ≤65% carve-out keep even a
+# near-full bar at orange, not red — a reset is close by then.
 pct_color_pacing() {
     local usage=$1 target=$2
     local delta=$(( usage - target ))
-    if   [ "$delta" -ge 30 ] 2>/dev/null; then printf "%s" "$RED"
-    elif [ "$delta" -ge 20 ] 2>/dev/null; then printf "%s" "$ORANGE"
-    elif [ "$delta" -ge 10 ] 2>/dev/null; then printf "%s" "$YELLOW"
-    elif [ "$delta" -ge 0  ] 2>/dev/null; then printf "%s" "$GREEN"
-    else                                       printf "%s" "$CYAN"
+    local sev   # 0 cyan · 1 green · 2 yellow · 3 orange · 4 red
+    if   [ "$delta" -ge 50 ] 2>/dev/null; then sev=4
+    elif [ "$delta" -ge 35 ] 2>/dev/null; then sev=3
+    elif [ "$delta" -ge 20 ] 2>/dev/null; then sev=2
+    elif [ "$delta" -ge 0  ] 2>/dev/null; then sev=1
+    else                                        sev=0
     fi
+    if [ "$usage" -ge 90 ] 2>/dev/null; then
+        if   [ "$target" -le 65 ] 2>/dev/null; then sev=4
+        elif [ "$sev" -lt 3 ];                 then sev=3
+        fi
+    fi
+    case "$sev" in
+        4) printf "%s" "$RED"    ;;
+        3) printf "%s" "$ORANGE" ;;
+        2) printf "%s" "$YELLOW" ;;
+        1) printf "%s" "$GREEN"  ;;
+        *) printf "%s" "$CYAN"   ;;
+    esac
 }
 
 # Battery color: high charge is peaceful (cyan, like the other meters
